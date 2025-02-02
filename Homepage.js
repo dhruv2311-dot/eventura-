@@ -5,11 +5,7 @@ const app = express();
 const port = 5173;
 
 // MongoDB connection details
-<<<<<<< HEAD
-const uri = "mongodb://127.0.0.1:27017";
-=======
 const uri = "mongodb+srv://dhruvsonagra23:dhruv1723@event23.6qktv.mongodb.net/";
->>>>>>> 6cf0673 (connected server to atlas)
 const dbName = "eventura";
 
 let db;
