@@ -1,11 +1,11 @@
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
-
+const cors = require('cors');
 const app = express();
 const port = 5173;
-
+app.use(cors());
 // MongoDB connection details
-const uri = "mongodb+srv://dhruvsonagra23:dhruv1723@event23.6qktv.mongodb.net/";
+const uri = "https://eventura-2.onrender.com";
 const dbName = "eventura";
 
 let db;
