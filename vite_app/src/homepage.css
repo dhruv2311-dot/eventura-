@@ -1,0 +1,190 @@
+body {
+    margin: 0;
+   
+    background-color: #f8f9fa;
+  }
+  
+  .eventura-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+  }
+  
+  .logo-section {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-image {
+    height: 40px;
+    margin-right: 10px;
+  }
+  
+  .tagline {
+    font-size: 14px;
+    color: #6b7280;
+    margin-left: 8px;
+  }
+  
+  .nav-links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .nav-links a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    position: relative;
+    padding-bottom: 4px;
+  }
+  
+  .nav-links .active {
+    color: red;
+    border-bottom: 2px solid red;
+  }
+  
+  .right-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .icon {
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .icon:hover {
+    color: #fcd34d;
+  }
+  
+  .language-select {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+  }
+  
+  .talk-button {
+    background-color: #fcd34d;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .talk-button:hover {
+    background-color: #fbbf24;
+  }
+  
+  .hero-section {
+    background: url('https://static.vecteezy.com/system/resources/thumbnails/027/104/127/small_2x/cheering-crowd-illuminated-by-vibrant-stage-lights-at-concert-photo.jpg') center/cover no-repeat;
+    height: 500px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .overlay {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 40px;
+    text-align: center;
+    color: white;
+    border-radius: 10px;
+    max-width: 800px;
+  }
+  
+  .hero-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .search-filters {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+  }
+  
+  .search-input {
+    padding: 10px;
+    width: 180px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #f3f4f6;
+    font-size: 14px;
+  }
+  
+  .search-button {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .search-button:hover {
+    background-color: #333;
+  }
+  /* Categories Section */
+.categories-section {
+  padding: 40px 20px;
+  background-color: #f7f7f7;
+}
+
+.categories-title {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-items: center;
+}
+
+.category-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.category-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.category-name {
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding: 15px;
+  color: #333;
+  background-color: #fff;
+  text-transform: uppercase;
+}
