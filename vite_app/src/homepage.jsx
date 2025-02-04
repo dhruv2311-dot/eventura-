@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import logo from './assets/eventura.png';
-import { FiSearch, FiUser } from 'react-icons/fi';
+
 import { FaWhatsapp, FaInstagram, FaTwitter, FaFacebookF } from 'react-icons/fa';
 import './homepage.css';
 import axios from 'axios';
@@ -54,28 +53,7 @@ const Homepage = () => {
 
   return (
     <div className="eventura-container">
-      <header className="eventura-header">
-        <div className="logo-section">
-          <img src={logo} alt="Eventura Logo" className="logo-image" />
-        </div>
-        <nav className="nav-links">
-          <a href="#" className="active">HOME</a>
-          <a href="#">VENUES</a>
-          <a href="#">EVENTS</a>
-          <a href="#">PROJECTS</a>
-          <a href="#">BLOGS</a>
-          <a href="#">CONTACT US</a>
-        </nav>
-        <div className="right-section">
-          <FiSearch className="icon search-icon" />
-          <FiUser className="icon profile-icon" />
-          <select className="language-select">
-            <option>ENGLISH</option>
-          </select>
-          <button className="talk-button">Let's Talk</button>
-        </div>
-      </header>
-
+      
       <section className="hero-section">
         <div className="overlay">
           <h2 className="hero-title">Your Event, Our Expertise</h2>
