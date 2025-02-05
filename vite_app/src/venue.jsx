@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Footer from './footer'
 import './venues.css';
 import { useNavigate } from 'react-router-dom';
 import { FaWhatsapp, FaInstagram, FaTwitter, FaFacebookF } from 'react-icons/fa';
@@ -151,43 +152,7 @@ const Venue = () => {
           ))}
         </div>
       </div>
-      <footer className="footer1">
-        <div className="footer-section1">
-          <h4>FIND AN EVENT</h4>
-          <p>BECOME A MEMBER</p>
-          <p>Send Us Feedback</p>
-          <p>SPECIAL DISCOUNTS</p>
-        </div>
-        <div className="footer-section1">
-          <h4>GET HELP</h4>
-          <p>Your Status</p>
-          <p>Query</p>
-          <p>Policies</p>
-          <p>Payment Option</p>
-          <p>Contact Us</p>
-          <p>Refunds</p>
-        </div>
-        <div className="footer-section1">
-          <h4>ABOUT US</h4>
-          <p>News</p>
-          <p>Careers</p>
-          <p>Investors</p>
-          <p>Sustainability</p>
-        </div>
-        <div className="footer-section1">
-          <h4>Connect with Us</h4>
-          <div className="social-icons1">
-            <FaWhatsapp className="icon1" />
-            <FaInstagram className="icon1" />
-            <FaTwitter className="icon1" />
-            <FaFacebookF className="icon1" />
-          </div>
-        </div>
-        <div className="footer-bottom1">
-          <span>📍 India</span>
-          <span>2023 Inc, All Rights Reserved</span>
-        </div>
-      </footer>
+     <Footer/>
     </div>
   );
 };
