@@ -4,7 +4,7 @@ import Homepage from './homepage';
 import Venue from './venue';
 import Navbar from './Navbar';
 import Blogs from './Blogs';
-import Events from './Events';
+import Events from './events';
 import Contactus from './Contactus';
 import Projects from './Projects';
 
