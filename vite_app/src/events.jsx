@@ -146,18 +146,18 @@ const Events = () => {
         </form>
       </div>
       <div className="event-card">
-      <img src="https://disturbedechoes.com/images/thejourney/thejourney.jpg" alt="Event" className="event-image" />
-      <div className="event-text">
-        <h2>
-          Create Your<span className="comma">,</span> <b>Memorable Events.</b>
-        </h2>
-        <p>
-          Create Your Vision, Craft Memorable Events. Unleash Creativity,
-          Celebrate Memorable Events
-        </p>
+        <img src="https://disturbedechoes.com/images/thejourney/thejourney.jpg" alt="Event" className="event-image" />
+        <div className="event-text">
+          <h2>
+            Create Your<span className="comma">,</span> <b>Memorable Events.</b>
+          </h2>
+          <p>
+            Create Your Vision, Craft Memorable Events. Unleash Creativity,
+            Celebrate Memorable Events
+          </p>
+        </div>
       </div>
-    </div>
-<Footer/>
+      <Footer />
     </>
   );
 };
