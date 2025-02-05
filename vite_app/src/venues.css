@@ -1,0 +1,182 @@
+.hero-section-2 {
+  position: relative;
+  background-size: cover;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overlay2 {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 20px 40px;
+  text-align: center;
+  border-radius: 10px;
+}
+
+.hero-title2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 20px;
+}
+
+
+.search-filters2 {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.search-box2 {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 5px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-input2 {
+  border: none;
+  outline: none;
+  padding: 10px;
+  width: 180px;
+  background: transparent;
+}
+
+.icon-button2 {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.search-button2 {
+  padding: 12px 30px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.filter-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+.dropdown,
+.search-btn {
+  flex: 1;
+  max-width: calc(25% - 20px);
+}
+
+.dropdown-btn,
+.search-btn {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 16px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-btn:hover,
+.search-btn:hover {
+  background-color: #f0f0f0;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #333;
+  border-radius: 10px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.image {
+  width: 16%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.text-container {
+  width: 80%;
+  color: #fff;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 16px;
+}
+
+.venues-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.venue-card {
+  flex: 1 1 calc(25% - 20px);
+  min-width: 250px;
+  max-width: 300px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.venues-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+
+.venue-card:hover {
+  transform: translateY(-10px);
+}
+
+.venue-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.venue-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 10px;
+}
+
+.venue-location,
+.venue-capacity,
+.venue-price {
+  margin: 5px 10px;
+  color: #555;
+}
+
