@@ -6,7 +6,10 @@
   align-items: center;
   justify-content: center;
 }
-
+.category{
+  font-size: px;
+  margin-left: 1%;
+}
 .overlay {
   background: rgba(0, 0, 0, 0.6);
   padding: 40px;
@@ -51,10 +54,6 @@
   background-color: #333;
 }
 
-.category {
-  margin-left: 2%;
-  margin-bottom: 1%;
-}
 
 .categories-container {
   display: grid;
@@ -163,7 +162,7 @@
   justify-content: center;
   align-items: center;
   height: 40vh;
-  background-color: #f4f4f4;
+
   padding: 28px;
 }
 
@@ -212,7 +211,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 20px;
-  background-color: #f9f9f9;
+
   padding: 40px;
   height: 90vh;
 
@@ -272,7 +271,7 @@
   gap: 20px;
   flex-wrap: wrap;
   padding: 20px;
-  background-color: #f9f9f9;
+ 
 }
 
 .review-card {

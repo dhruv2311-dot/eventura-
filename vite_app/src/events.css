@@ -1,0 +1,241 @@
+.events-container {
+    position: relative;
+    width: 100%;
+    margin-top: 10.5vh;
+    height: 430px;
+    background: url("https://content.jdmagicbox.com/comp/ernakulam/m4/0484px484.x484.140206113128.a9m4/catalogue/we-create-events-panampilly-nagar-ernakulam-event-management-companies-nsobpzm660.jpg") no-repeat center center/cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+  
+.events-banner {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+}
+
+.events-title {
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.search-input {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    width: 250px;
+}
+
+.search-input input {
+    border: none;
+    outline: none;
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+}
+
+.search-icon {
+    color: gray;
+    cursor: pointer;
+}
+
+.search-button {
+    background: gray;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.search-button:hover {
+    background: black;
+}
+
+
+
+.event-form-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto;
+    background: #fff;
+   
+    border-radius: 8px;
+    
+    font-family: Arial, sans-serif;
+}
+
+
+.events{
+    text-align: center;
+    font-size: 35px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 20px;
+}
+
+
+.form-section {
+    margin-bottom: 20px;
+}
+
+
+.form-section label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #222;
+    display: block;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+
+.form-section input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    font-size: 14px;
+    background: transparent;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.form-section input:focus {
+    border-color: #000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.event-type-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.event-type-buttons button {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #000;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+    background: transparent;
+    color: #000;
+}
+
+.event-type-buttons button.active {
+    background: #000;
+    color: white;
+}
+
+
+.date-time-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.submit-button, .cancel-button {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    border: 2px solid #000;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.submit-button {
+    background: rgba(248, 194, 93, 0.792);
+    color: white;
+}
+
+.cancel-button {
+    background:red;
+    color: white;
+}
+
+.submit-button:hover {
+    background: black;
+    color: white;
+}
+
+.cancel-button:hover {
+    background: #000;
+    color: white;
+}
+
+
+@media (max-width: 600px) {
+    .date-time-container {
+        grid-template-columns: 1fr;
+    }
+}
+.event-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    background-color: #2c2c2c;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 700px;
+margin-bottom: 4%;
+margin-left: 25%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .event-image {
+    width: 150px;
+    height: auto;
+    border-radius: 8px;
+    margin-right: 20px;
+  }
+  
+  .event-text {
+    color: white;
+    max-width: 500px;
+  }
+  
+  .event-text h2 {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .comma {
+    color: transparent;
+  }
+  
+  .event-text p {
+    font-size: 16px;
+    margin-top: 5px;
+  }
+  
