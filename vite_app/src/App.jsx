@@ -6,7 +6,7 @@ import Navbar from './Navbar';
 import Blogs from './Blogs';
 import Events from './events';
 import Contactus from './Contactus';
-import Projects from './Projects';
+import Projects from './projects';
 
 function App() {
   return (
