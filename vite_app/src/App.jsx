@@ -7,11 +7,12 @@ import Blogs from './Blogs';
 import Events from './events';
 import Contactus from './Contactus';
 import Projects from './projects';
+import Profile from './profilepage';
 
 function App() {
   return (
     <Router>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         <Route path='/' element={<Homepage />} />
         <Route path='/venue' element={<Venue />} />
@@ -19,6 +20,7 @@ function App() {
         <Route path='/projects' element={<Projects />} />
         <Route path='/blogs' element={<Blogs />} />
         <Route path='/contactus' element={<Contactus />} />
+        <Route path='/profile' element={<Profile />} />
       </Routes>
     </Router>
   );

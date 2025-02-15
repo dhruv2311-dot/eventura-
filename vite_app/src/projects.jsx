@@ -1,97 +1,76 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './projects.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./Projects.css";
+import Footer from './footer'
+import Navbar from './Navbar';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [featuredIndex, setFeaturedIndex] = useState(0);
 
   useEffect(() => {
-    axios.get('https://eventura-3.onrender.com/projects')
-      .then(response => {
-        const recentProjects = response.data.filter(project => project.status === 'recent');
-        setProjects(recentProjects);
-      })
-      .catch(error => console.error('Error fetching projects:', error));
+    axios.get("https://eventura-3.onrender.com/projects")
+      .then((response) => setProjects(response.data))
+      .catch((error) => console.error("Error fetching projects:", error));
   }, []);
 
   useEffect(() => {
     if (projects.length > 0) {
-      const timer = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % projects.length);
+      const interval = setInterval(() => {
+        setFeaturedIndex((prevIndex) => (prevIndex + 1) % projects.length);
       }, 3000);
-
-      return () => clearInterval(timer);
+      return () => clearInterval(interval);
     }
   }, [projects]);
 
-  if (projects.length === 0) {
-    return <div>Loading...</div>;
-  }
-
-  const currentProject = projects[currentIndex];
-
-  const renderValue = (value) => {
-    if (typeof value === 'object' && value !== null) {
-      return JSON.stringify(value);
-    }
-    return value;
+  const categorizedProjects = {
+    recent: projects.filter((p) => p.status === "recent"),
+    ongoing: projects.filter((p) => p.status === "ongoing"),
+    upcoming: projects.filter((p) => p.status === "upcoming"),
   };
 
   return (
     <>
-      <div className="carousel-container">
-        <h2>PROJECTS</h2>
-        <div className="carousel-content">
-          <div className="project-details">
-            <h3>{renderValue(currentProject.title)}</h3>
-            <p>{renderValue(currentProject.description)}</p>
-            <p><strong>Date:</strong> {renderValue(currentProject.date)}</p>
-            <p><strong>Client:</strong> {renderValue(currentProject.client)}</p>
-            <p><strong>Category:</strong> {renderValue(currentProject.category)}</p>
-            <p><strong>Manager:</strong> {renderValue(currentProject.manager)}</p>
-          </div>
-          <div className="project-images">
-            {Array.isArray(currentProject.images) ? (
-              currentProject.images.map((img, index) => (
-                <img key={index} src={img} alt={`Project ${index + 1}`} />
-              ))
-            ) : (
-              <img src={currentProject.images} alt={currentProject.title} />
-            )}
-          </div>
-        </div>
-        <div className="dots">
-          {projects.map((_, index) => (
-            <span
-              key={index}
-              onClick={() => setCurrentIndex(index)}
-              className={currentIndex === index ? 'active' : ''}
-            ></span>
-          ))}
-        </div>
-      </div>
-      <div className="recent-projects-container">
-        <h2 className="recent-projects-title">Our Recent Projects</h2>
-        <div className="projects-grid">
-          {projects.map((project, index) => (
-            <div key={index} className="project-card">
-              <img
-                src={Array.isArray(project.images) ? project.images[0] : project.images}
-                alt={project.title}
-                className="project-image"
-              />
-              <div className="project-overlay">
-                <div>
-                  <h3 className="project-title">{renderValue(project.title)}</h3>
-                  <p className="project-category">{renderValue(project.category)}</p>
-                </div>
-                <button className="view-button">View</button>
-              </div>
+    <Navbar/>
+    <div className="projects-wrapper">
+      {/* Featured Project Container */}
+      {projects.length > 0 && (
+        <div className="featured-project-container">
+          <h2>PROJECTS</h2>
+          <div className="featured-content">
+            <img src={projects[featuredIndex].images} alt={projects[featuredIndex].title} />
+            <div className="details">
+              <h3>{projects[featuredIndex].title}</h3>
+              <p>{projects[featuredIndex].description}</p>
+              <p><strong>Client:</strong> {projects[featuredIndex].client.name}</p>
+              <p><strong>Manager:</strong> {projects[featuredIndex].manager}</p>
             </div>
-          ))}
+          </div>
         </div>
+      )}
+
+      {/* Projects Grid Section */}
+      <div className="projects-list-container">
+        {Object.entries(categorizedProjects).map(([category, items]) => (
+          <div key={category} className="projects-category">
+            <h2>{category.toUpperCase()} PROJECTS</h2>
+            <div className="projects-grid">
+              {items.map((project) => (
+                <div key={project.title} className="project-card">
+                  <img src={project.images} alt={project.title} />
+                  <div className="overlay3">
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
+                    <button>View</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
+    </div>
+    <Footer/>
     </>
   );
 };

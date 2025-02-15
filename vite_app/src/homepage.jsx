@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Footer from './footer';
+import Navbar from './Navbar';
 
 import './homepage.css';
 import axios from 'axios';
@@ -52,6 +53,8 @@ const Homepage = () => {
 
 
   return (
+    <>
+    <Navbar/>
     <div className="eventura-container">
       
       <section className="hero-section">
@@ -150,7 +153,7 @@ const Homepage = () => {
    <Footer/>
     </div>
 
-
+</>
   );
 };
 

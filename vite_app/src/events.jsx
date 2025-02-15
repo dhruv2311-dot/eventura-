@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaWhatsapp, FaInstagram, FaTwitter, FaFacebookF } from 'react-icons/fa';
 import './events.css';
 import Footer from './footer'
+import Navbar from './Navbar';
 
 const Events = () => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const Events = () => {
 
   return (
     <>
+    <Navbar />
       <div className="events-container">
         <div className="events-banner">
           <h1 className="events-title">EVENTS</h1>
@@ -77,7 +79,7 @@ const Events = () => {
               />
               <FaSearch size={18} className="search-icon" />
             </div>
-            <button className="search-button" onClick={handleSearch}>
+            <button className="search-button3" onClick={handleSearch}>
               Search
             </button>
           </div>

@@ -1,82 +1,165 @@
+
 .eventura-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 40px;
-    background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    width: 94vw;
-    top: 0;
-    z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 94%;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.tagline {
+  font-size: 14px;
+  color: #6b7280;
+  margin-left: 8px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.3s, border-bottom 0.3s;
+}
+
+.nav-links a:hover {
+  color: red;
+  border-bottom: 2px solid red;
+}
+
+
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.icon:hover {
+  color: #fcd34d;
+}
+
+.language-select {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+}
+
+.talk-button {
+  background-color: #fcd34d;
+  padding: 8px 16px;
+  border: none;
+  margin-top: 0%;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.talk-button:hover {
+  background-color: #fbbf24;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 1200px) {
+  .eventura-header {
+    padding: 15px 30px;
   }
-  
-  .logo-section {
-    display: flex;
-    align-items: center;
+}
+
+@media (max-width: 992px) {
+  .eventura-header {
+    padding: 10px 20px;
   }
-  
   .logo-image {
-    height: 40px;
-    margin-right: 10px;
+    height: 35px;
   }
-  
   .tagline {
-    font-size: 14px;
-    color: #6b7280;
-    margin-left: 8px;
+    font-size: 12px;
   }
-  
-  .nav-links {
-    display: flex;
-    gap: 20px;
-  }
-  
   .nav-links a {
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    position: relative;
-    padding-bottom: 4px;
+    font-size: 13px;
   }
-  
-  .nav-links .active {
-    color: red;
-    border-bottom: 2px solid red;
-  }
-  
-  .right-section {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .icon {
-    font-size: 20px;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
-  
-  .icon:hover {
-    color: #fcd34d;
-  }
-  
-  .language-select {
-    padding: 6px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: white;
-  }
-  
   .talk-button {
-    background-color: #fcd34d;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    padding: 6px 12px;
   }
-  
-  .talk-button:hover {
-    background-color: #fbbf24;
+}
+
+@media (max-width: 768px) {
+  .eventura-header {
+    padding: 8px 15px;
   }
+  .logo-image {
+    height: 30px;
+  }
+  .tagline {
+    font-size: 11px;
+  }
+  .nav-links a {
+    font-size: 12px;
+  }
+  .right-section {
+    gap: 5px;
+  }
+  .icon {
+    font-size: 18px;
+  }
+  .language-select {
+    padding: 4px;
+  }
+  .talk-button {
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .eventura-header {
+    padding: 5px 10px;
+  }
+  .logo-image {
+    height: 25px;
+  }
+  .tagline {
+    font-size: 10px;
+  }
+  .nav-links a {
+    font-size: 11px;
+  }
+  .right-section {
+    gap: 3px;
+  }
+  .icon {
+    font-size: 16px;
+  }
+  .language-select {
+    padding: 3px;
+  }
+  .talk-button {
+    padding: 3px 6px;
+  }
+}

@@ -3,7 +3,12 @@ import logo from './assets/eventura.png';
 import { FiSearch, FiUser } from 'react-icons/fi';
 import {Link} from 'react-router-dom'
 import './navbar.css'
+import { useNavigate } from 'react-router-dom';
 const navbar = () => {
+  const navigate = useNavigate();
+  const handleprofile=()=>{
+    navigate('/profile')
+  }
   return (
     <div>
       <header className="eventura-header">
@@ -18,7 +23,7 @@ const navbar = () => {
           <a href="#">BLOGS</a>
           <a href="#">CONTACT US</a> */}
 
-            <Link to="/" className='active'>HOME</Link>
+            <Link to="/" >HOME</Link>
             <Link to="/venue">VENUES</Link>
             <Link to="/events">EVENTS</Link>
             <Link to="/projects">PROJECTS</Link>
@@ -28,7 +33,7 @@ const navbar = () => {
         </nav>
         <div className="right-section">
           <FiSearch className="icon search-icon" />
-          <FiUser className="icon profile-icon" />
+          <FiUser className="icon profile-icon" onClick={handleprofile} />
           <select className="language-select">
             <option>ENGLISH</option>
           </select>

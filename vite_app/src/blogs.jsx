@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Blogs.css";
 import Footer from './footer'
+import Navbar from './Navbar';
+
 const Blogs = () => {
   const [publishedBlogs, setPublishedBlogs] = useState([]);
   const [upcomingBlogs, setUpcomingBlogs] = useState([]);
@@ -20,6 +22,7 @@ const Blogs = () => {
 
   return (
     <>
+    <Navbar />
     <div className="blogs-container">
       {/* Our Blogs Section */}
       <section className="our-blogs">
