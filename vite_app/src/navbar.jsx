@@ -28,7 +28,7 @@ const navbar = () => {
             <Link to="/events">EVENTS</Link>
             <Link to="/projects">PROJECTS</Link>
             <Link to="/blogs">BLOGS</Link>
-            <Link to="/contact-us">CONTACT US</Link>
+            <Link to="/contactus">CONTACT US</Link>
 
         </nav>
         <div className="right-section">
