@@ -8,19 +8,22 @@ import Events from './events';
 import Contactus from './Contactus';
 import Projects from './projects';
 import Profile from './profilepage';
+import Landingpage from './landingpage';
+import ProtectedRoute from './ProtecedRoute';
 
 function App() {
   return (
     <Router>
       {/* <Navbar /> */}
       <Routes>
-        <Route path='/' element={<Homepage />} />
-        <Route path='/venue' element={<Venue />} />
-        <Route path='/events' element={<Events />} />
-        <Route path='/projects' element={<Projects />} />
-        <Route path='/blogs' element={<Blogs />} />
-        <Route path='/contactus' element={<Contactus />} />
-        <Route path='/profile' element={<Profile />} />
+      <Route path='/' element={<Landingpage/>}/>
+        <Route path='/home' element={<ProtectedRoute component={Homepage} />} />
+        <Route path='/venue' element={<ProtectedRoute component={Venue} />} />
+        <Route path='/events' element={<ProtectedRoute component={Events} />} />
+        <Route path='/projects' element={<ProtectedRoute component={Projects} />} />
+        <Route path='/blogs' element={<ProtectedRoute component={Blogs} />} />
+        <Route path='/contactus' element={<ProtectedRoute component={Contactus} />} />
+        <Route path='/profile' element={<ProtectedRoute component={Profile} />} />
       </Routes>
     </Router>
   );

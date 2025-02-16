@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./profile.css";
 import { FaHeart, FaUser, FaCalendarAlt, FaCreditCard, FaCog } from "react-icons/fa";
 import proileimge from './assets/image.jpg'
+import Footer from './footer';
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
@@ -78,6 +79,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
+    <Footer />
     </>
   );
 };
