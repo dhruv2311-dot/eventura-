@@ -4,6 +4,7 @@ import './venues.css';
 import { useNavigate } from 'react-router-dom';
 import { FaWhatsapp, FaInstagram, FaTwitter, FaFacebookF } from 'react-icons/fa';
 import axios from 'axios';
+import Navbar from './Navbar';
 
 const Venue = () => {
   const navigate = useNavigate();
@@ -51,6 +52,8 @@ const Venue = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div>
       <section
         className="hero-section-2"
@@ -154,6 +157,7 @@ const Venue = () => {
       </div>
      <Footer/>
     </div>
+    </>
   );
 };
 
