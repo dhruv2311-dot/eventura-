@@ -10,10 +10,15 @@ import Projects from './projects';
 import Profile from './profilepage';
 import Landingpage from './landingpage';
 import ProtectedRoute from './ProtecedRoute';
-
+import AboutUs from './Aboutus';
+import Authuser from './Authuser';
+import { useAuth0 } from "@auth0/auth0-react";
 function App() {
+  const { isAuthenticated } = useAuth0();
   return (
+    
     <Router>
+      {isAuthenticated && <Authuser />}
       {/* <Navbar /> */}
       <Routes>
       <Route path='/' element={<Landingpage/>}/>
@@ -24,6 +29,7 @@ function App() {
         <Route path='/blogs' element={<ProtectedRoute><Blogs/></ProtectedRoute>} />
         <Route path='/contactus' element={<ProtectedRoute><Contactus/></ProtectedRoute>} />
         <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path='/aboutus' element={<ProtectedRoute><AboutUs /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

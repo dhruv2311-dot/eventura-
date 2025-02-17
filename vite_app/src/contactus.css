@@ -7,7 +7,7 @@
   }
   
   /* Hero Section */
-  .hero-section {
+  .hero-section5 {
     position: relative;
     background: url("https://www.cera-india.com/sites/default/files/2021-06/Investor%20Relations.jpg") center/cover no-repeat;
     height: 350px;
@@ -17,14 +17,16 @@
     color: white;
   }
   
-  .hero-section h2 {
+  .hero-section5 h2 {
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 10px;
+    color: black;
   }
   
-  .hero-section p {
+  .hero-section5 p {
     font-size: 1.2rem;
+    color: black;
   }
   
   /* Contact Section */

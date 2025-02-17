@@ -16,12 +16,7 @@ const navbar = () => {
           <img src={logo} alt="Eventura Logo" className="logo-image" />
         </div>
         <nav className="nav-links">
-          {/* <a href="#" className="active">HOME</a>
-          <a href="#">VENUES</a>
-          <a href="#">EVENTS</a>
-          <a href="#">PROJECTS</a>
-          <a href="#">BLOGS</a>
-          <a href="#">CONTACT US</a> */}
+     
 
             <Link to="/" >HOME</Link>
             <Link to="/venue">VENUES</Link>
@@ -29,6 +24,7 @@ const navbar = () => {
             <Link to="/projects">PROJECTS</Link>
             <Link to="/blogs">BLOGS</Link>
             <Link to="/contactus">CONTACT US</Link>
+            <Link to="/aboutus">ABOUT US</Link>
 
         </nav>
         <div className="right-section">
