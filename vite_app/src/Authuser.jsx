@@ -8,7 +8,7 @@ const AuthHandler = () => {
   useEffect(() => {
     if (isAuthenticated && user) {
       axios
-        .post("http://localhost:5000/api/auth", {
+        .post("https://eventura-7.onrender.com/auth", {
           sub: user.sub,
           name: user.name,
           email: user.email,
