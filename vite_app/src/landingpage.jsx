@@ -1,8 +1,23 @@
 import React from "react";
 import "./landingpage.css"; // External CSS file
 import logo from './assets/eventura.png';
-import { useAuth0 } from "@auth0/auth0-react"; 
+import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from 'react-router-dom'; 
 const LandingPage = () => {
+    const navigate = useNavigate();
+    const handlehome=()=>{
+        navigate('/home')
+      }
+    const handleevents=()=>{
+        navigate('/events')
+      }
+    const handlevenues=()=>{
+        navigate('/venue')
+      }
+    const handleblogs=()=>{
+        navigate('/blogs')
+      }
+     
     const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
     return (
         <div>
@@ -11,11 +26,11 @@ const LandingPage = () => {
              
                 <img src={logo} alt="logo" className="logo" />
                 <ul className="nav-links">
-                    <li>Home</li>
-                    <li>Events</li>
-                    <li>Venues</li>
+                    <li onClick={handlehome}>Home</li>
+                    <li onClick={handleevents}>Events</li>
+                    <li onClick={handlevenues}>Venues</li>
                     <li>Services</li>
-                    <li>Blog</li>
+                    <li onClick={handleblogs}>Blog</li>
                 </ul>
                 <div className="auth-buttons">
                     {!isAuthenticated ? (
@@ -39,7 +54,7 @@ const LandingPage = () => {
                 <p>Plan your perfect event with us.</p>
                 <div className="hero-buttons">
                     <button className="btn-primary">Explore Events</button>
-                    <button className="btn-secondary">Get Started</button>
+                    <button className="btn-secondary" onClick={handlehome}>Get Started</button>
                 </div>
             </header>
 
@@ -96,7 +111,7 @@ const LandingPage = () => {
                     Create unforgettable moments with Eventura. From elegant weddings to grand corporate
                     events, we bring your vision to life with precision and creativity.
                 </p>
-                <button className="btn-primary">Start Planning</button>
+                <button className="btn-primary" onClick={handleevents}>Start Planning</button>
             </section>
 
 
