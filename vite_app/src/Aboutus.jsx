@@ -1,82 +1,117 @@
+import React from "react";
+import { FaLightbulb, FaUsers, FaChartLine } from "react-icons/fa";
+import { motion } from "framer-motion";
 import "./AboutUs.css";
-import { FaLightbulb, FaUsers, FaChartLine, FaRocket, FaGlobe, FaMobileAlt } from "react-icons/fa";
-import founder from './assets/image.jpg';
-const AboutUs = () => {
+import Founder from './assets/image.jpg'
+
+const About = () => {
   return (
     <div className="about-container">
-      {/* Introduction Section */}
-      <section className="introduction-section">
-        <h1>About Eventura</h1>
-        <p>Your perfect event, our expertise.</p>
-      </section>
+      {/* Top Banner Section */}
+      <motion.div
+        className="top-banner"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="banner-content">
+          <h2>About Eventura</h2>
+          <p>Your perfect event, our expertise.</p>
+        </div>
+      </motion.div>
 
-      {/* About My Website Section */}
-      <section className="about-website">
-        <h2>About My Website</h2>
-        <p>
-          Eventura is your go-to platform for finding and managing event venues seamlessly. 
-          We help event organizers and hosts connect efficiently.
-        </p>
-        <button className="read-more">Read More</button>
-      </section>
+      {/* Features Section */}
+      <motion.div
+        className="features-section"
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+      >
+        <div className="feature-card">
+          <FaLightbulb className="icon" />
+          <h3>Creative Solutions</h3>
+          <p>Innovative approaches to transform your event into a remarkable experience.</p>
+        </div>
+        <div className="feature-card">
+          <FaUsers className="icon" />
+          <h3>Expert Team</h3>
+          <p>Dedicated professionals committed to making your vision a reality.</p>
+        </div>
+        <div className="feature-card">
+          <FaChartLine className="icon" />
+          <h3>Growth Focus</h3>
+          <p>Strategic insights to scale your events and maximize impact.</p>
+        </div>
+      </motion.div>
 
-      {/* Our Mission Section */}
-      <section className="mission-section">
+      {/* Mission Section with Image */}
+      <motion.div
+        className="mission-section"
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.4 }}
+      >
         <div className="mission-content">
-          <h2>Our Mission</h2>
-          <p>To provide an effortless event planning experience through our platform.</p>
-          <div className="mission-icons">
-            <div className="icon-card">
-              <FaLightbulb className="icon" />
-              <p>Innovative Solutions</p>
-            </div>
-            <div className="icon-card">
-              <FaUsers className="icon" />
-              <p>Expert Team</p>
-            </div>
-            <div className="icon-card">
-              <FaChartLine className="icon" />
-              <p>Growth Focus</p>
+          <div className="mission-text">
+            <h2>Our Mission</h2>
+            <p>We aim to revolutionize the event management industry by delivering innovative solutions that empower organizers and budget efficiency.</p>
+            <div className="stats">
+              <h3>500+</h3>
+              <p>Events Completed</p>
+              <h3>98%</h3>
+              <p>Client Satisfaction</p>
             </div>
           </div>
+          <img src="https://novobliss.in/wp-content/uploads/2021/09/Mission.jpg" alt="Mission" className="mission-image" />
         </div>
-        <img src="https://static.vecteezy.com/system/resources/previews/003/396/738/non_2x/businessman-clicks-on-virtual-screen-mission-photo.jpg" alt="Mission" className="mission-image" />
-      </section>
+      </motion.div>
 
-      {/* Our Vision Section */}
-      <section className="vision-section">
+      {/* Vision Section */}
+      <motion.div
+        className="vision-section"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+      >
         <h2>Our Vision</h2>
-        <p>To be the global leader in event solutions, setting new standards for excellence.</p>
-        <div className="vision-icons">
-          <div className="icon-card">
-            <FaRocket className="icon" />
-            <p>Innovation First</p>
+        <p>To be the global leader in innovative event solutions, setting new standards for excellence and creativity.</p>
+        <div className="vision-cards">
+          <div className="vision-card">
+            <FaLightbulb className="icon" />
+            <h3>Innovation First</h3>
+            <p>Pioneering new techniques and approaches for impactful events.</p>
           </div>
-          <div className="icon-card">
-            <FaGlobe className="icon" />
-            <p>Global Impact</p>
+          <div className="vision-card">
+            <FaUsers className="icon" />
+            <h3>Global Impact</h3>
+            <p>Creating extraordinary experiences that resonate beyond borders.</p>
           </div>
-          <div className="icon-card">
-            <FaMobileAlt className="icon" />
-            <p>Future Ready</p>
+          <div className="vision-card">
+            <FaChartLine className="icon" />
+            <h3>Future Ready</h3>
+            <p>Preparing tomorrow’s challenges with today’s expertise.</p>
           </div>
         </div>
-      </section>
+      </motion.div>
 
       {/* Founder Section */}
-      <section className="founder-section">
-        <img src={founder} alt="Founder" className="founder-image" />
-        <div>
-          <h2>Meet Our Founder</h2>
-          <p>
-            Dhruv Sonagra, the visionary behind Eventura, is passionate about simplifying event planning 
-            through technology and innovation.
-          </p>
-          <button className="read-more">Read More</button>
+      <motion.div
+        className="founder-section"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
+      >
+        <img src={Founder} alt="Founder" className="founder-image" />
+        <div className="founder-text">
+          <h2>Dhruv Sonagra</h2>
+          <h4>Founder & CEO</h4>
+          <p>With years of experience in event management and technology, John has transformed the industry by introducing innovative and efficient solutions.</p>
+          <button className="read-more">Read Full Story</button>
         </div>
-      </section>
+      </motion.div>
     </div>
   );
 };
 
-export default AboutUs;
+export default About;
+

@@ -28,8 +28,8 @@ const navbar = () => {
 
         </nav>
         <div className="right-section">
-          <FiSearch className="icon search-icon" />
-          <FiUser className="icon profile-icon" onClick={handleprofile} />
+          <FiSearch className="icon1 search-icon" />
+          <FiUser className="icon1 profile-icon" onClick={handleprofile} />
           <select className="language-select">
             <option>ENGLISH</option>
           </select>

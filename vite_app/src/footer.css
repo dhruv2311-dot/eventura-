@@ -32,13 +32,13 @@
     margin-top: 10px;
   }
   
-  .icon {
+  .icon2 {
     font-size: 24px;
     cursor: pointer;
     transition: transform 0.3s ease;
   }
   
-  .icon:hover {
+  .icon2:hover {
     transform: scale(1.2);
     color: #00aced;
   }
