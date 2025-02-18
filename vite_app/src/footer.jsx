@@ -1,15 +1,22 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaWhatsapp, FaInstagram, FaTwitter, FaFacebookF } from 'react-icons/fa';
-import './footer.css'
-const footer = () => {
+import './footer.css';
+
+const Footer = () => {
+  const navigate = useNavigate();
+
+  const handleDiscount = () => {
+    navigate('/discounts');
+  };
+
   return (
-    <div>
-       <footer className="footer">
+    <footer className="footer">
       <div className="footer-section">
         <h4>FIND AN EVENT</h4>
         <p>BECOME A MEMBER</p>
         <p>Send Us Feedback</p>
-        <p>SPECIAL DISCOUNTS</p>
+        <p onClick={handleDiscount}>SPECIAL DISCOUNTS</p>
       </div>
       <div className="footer-section">
         <h4>GET HELP</h4>
@@ -30,10 +37,10 @@ const footer = () => {
       <div className="footer-section">
         <h4>Connect with Us</h4>
         <div className="social-icons">
-          <FaWhatsapp className="icon" />
-          <FaInstagram className="icon" />
-          <FaTwitter className="icon" />
-          <FaFacebookF className="icon" />
+          <FaWhatsapp className="icon2" />
+          <FaInstagram className="icon2" />
+          <FaTwitter className="icon2" />
+          <FaFacebookF className="icon2" />
         </div>
       </div>
       <div className="footer-bottom">
@@ -41,8 +48,7 @@ const footer = () => {
         <span>2023 Inc, All Rights Reserved</span>
       </div>
     </footer>
-    </div>
-  )
-}
+  );
+};
 
-export default footer
+export default Footer;

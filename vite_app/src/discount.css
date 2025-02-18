@@ -1,0 +1,208 @@
+.discount-container {
+  width: 90%;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+/* Header Section */
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f7f8fc;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.header-content {
+  max-width: 50%;
+}
+
+.header-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+}
+
+.header-content p {
+  font-size: 1.1rem;
+  margin: 10px 0;
+}
+
+.timer {
+  display: flex;
+  gap: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.event-image {
+  width: 300px;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Exclusive Deals */
+.exclusive-deals {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.deals-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.deal-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  flex: 1;
+}
+
+.deal-card h3 {
+  font-size: 1.5rem;
+}
+
+.deal-card p {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.strike {
+  text-decoration: line-through;
+  color: gray;
+  margin-left: 5px;
+}
+
+.deal-card button {
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Find Your Perfect Deal */
+.find-deal {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.filter-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.filter-options select,
+.filter-options input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Scratch & Share Section */
+.scratch-share-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+}
+
+.scratch-win {
+  background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+  color: white;
+  flex: 1;
+  text-align: center;
+  padding: 30px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.scratch-btn {
+  background: white;
+  color: #6c5ce7;
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.share-section {
+  flex: 1;
+  text-align: center;
+  padding: 30px;
+  background: #f1f2f6;
+  border-radius: 10px;
+}
+
+.share-icons {
+  margin-top: 10px;
+}
+
+/* Recommended Section */
+.recommended-section {
+  margin: 40px 0;
+  text-align: center;
+}
+
+.recommendations {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.recommend-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  flex: 1;
+}
+
+.recommend-card span {
+  display: block;
+  font-size: 0.9rem;
+  color: gray;
+  margin-top: 5px;
+}
+
+.recommend-card button {
+  background: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .header-content {
+    max-width: 100%;
+  }
+
+  .event-image {
+    width: 100%;
+  }
+
+  .deals-container,
+  .filter-options,
+  .scratch-share-container,
+  .recommendations {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
