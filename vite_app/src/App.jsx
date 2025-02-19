@@ -13,6 +13,7 @@ import ProtectedRoute from './ProtecedRoute';
 import AboutUs from './Aboutus';
 import Authuser from './Authuser';
 import Discount from './discount';
+import Feedback from './feedback';
 import { useAuth0 } from "@auth0/auth0-react";
 function App() {
   const { isAuthenticated } = useAuth0();
@@ -32,6 +33,7 @@ function App() {
         <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path='/aboutus' element={<ProtectedRoute><AboutUs /></ProtectedRoute>} />
         <Route path='/discounts' element={<ProtectedRoute><Discount /></ProtectedRoute>} />
+        <Route path='/feedback' element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
       </Routes>
     </Router>
   );
