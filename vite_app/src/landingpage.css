@@ -63,7 +63,7 @@
   }
   
   /* Hero Section */
-  .hero {
+  .hero1 {
     height: 80vh;
     display: flex;
     flex-direction: column;
@@ -76,12 +76,12 @@
     position: relative;
   }
   
-  .hero h1 {
+  .hero1 h1 {
     font-size: 3rem;
     margin-bottom: 10px;
   }
   
-  .hero p {
+  .hero1 p {
     font-size: 1.3rem;
     margin-bottom: 20px;
   }
