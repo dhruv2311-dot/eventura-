@@ -47,7 +47,7 @@ const LandingPage = () => {
            
             {/* Hero Section */}
             <header
-                className="hero"
+                className="hero1"
                 style={{ backgroundImage: `url("https://image.wedmegood.com/resized/720X/uploads/member/1550137/1604992621_IMG_20201110_WA0027.jpg")` }}
             >
                 <h1>Your Event, Our Expertise</h1>
