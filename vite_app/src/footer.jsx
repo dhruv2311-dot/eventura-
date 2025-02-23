@@ -9,7 +9,7 @@ const Footer = () => {
   const handleDiscount = () => {
     navigate('/discounts');
   };
-  const handlecontactus= () => {
+  const handlecontactus = () => {
     navigate('/contactus');
   };
   const handleFeedback = () => {
@@ -43,10 +43,18 @@ const Footer = () => {
       <div className="footer-section">
         <h4>Connect with Us</h4>
         <div className="social-icons">
-          <FaWhatsapp className="icon2" />
-          <FaInstagram className="icon2" />
-          <FaTwitter className="icon2" />
-          <FaFacebookF className="icon2" />
+          <a href="https://wa.me/yourwhatsapplink" target="_blank" rel="noopener noreferrer">
+            <FaWhatsapp className="icon2" />
+          </a>
+          <a href="https://www.instagram.com/dhruvvv_23_/" target="_blank" rel="noopener noreferrer">
+            <FaInstagram className="icon2" />
+          </a>
+          <a href="https://x.com/dhruvvv_23_" target="_blank" rel="noopener noreferrer">
+            <FaTwitter className="icon2" />
+          </a>
+          <a href="https://www.facebook.com/yourusername" target="_blank" rel="noopener noreferrer">
+            <FaFacebookF className="icon2" />
+          </a>
         </div>
       </div>
       <div className="footer-bottom">

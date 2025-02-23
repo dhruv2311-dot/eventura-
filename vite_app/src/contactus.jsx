@@ -3,7 +3,8 @@ import axios from "axios";
 import { FiMapPin, FiPhone, FiMail, FiClock } from "react-icons/fi";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import "./ContactUs.css";
-
+import Navbar from './navbar';
+import Footer from './footer';
 const ContactUs = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -29,6 +30,8 @@ const ContactUs = () => {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="contact-container">
       <div className="hero-section5">
         <div className="overlay5">
@@ -101,7 +104,9 @@ const ContactUs = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div>4
+    <Footer />
+    </>
   );
 };
 
