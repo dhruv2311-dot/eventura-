@@ -25,7 +25,7 @@ const LandingPage = () => {
             <nav className="navbar">
              
                 <img src={logo} alt="logo" className="logo" />
-                <ul className="nav-links">
+                <ul className="nav-links1">
                     <li onClick={handlehome}>Home</li>
                     <li onClick={handleevents}>Events</li>
                     <li onClick={handlevenues}>Venues</li>

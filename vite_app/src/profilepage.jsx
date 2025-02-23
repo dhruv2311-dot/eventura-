@@ -4,6 +4,7 @@ import "./profile.css";
 import { FaHeart, FaUser, FaCalendarAlt, FaCreditCard, FaCog } from "react-icons/fa";
 import proileimge from './assets/image.jpg'
 import Footer from './footer';
+import Navbar from "./navbar";
 const ProfilePage = () => {
   const navigate = useNavigate();
   const [fullName, setFullName] = useState("");
@@ -13,6 +14,7 @@ const ProfilePage = () => {
 
   return (
     <>
+    <Navbar />
       <button className="back-btn" onClick={() => navigate(-1)}>Back</button>
     <div className="profile-container">
       {/* Sidebar */}

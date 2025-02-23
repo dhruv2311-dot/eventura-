@@ -27,12 +27,19 @@ function App() {
     <DataProvider>
       <Router>
         {isAuthenticated && <Authuser />}
+        {/* <Navbar /> ✅ Navbar added globally */}
         <Routes>
           <Route path="/" element={<Landingpage />} />
           <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
+          
+          {/* ✅ Venue Routes */}
           <Route path="/venue" element={<ProtectedRoute><Venue /></ProtectedRoute>} />
-          <Route path="/venue/:id" element={<ProtectedRoute><VenueDetails /></ProtectedRoute>} />  {/* Venue Details Page */}
-          <Route path="/category/:id" element={<ProtectedRoute><CategoryDetails /></ProtectedRoute>} />  {/* Category Details Page */}
+          <Route path="/venue/:id" element={<ProtectedRoute><VenueDetails /></ProtectedRoute>} />  
+
+          {/* ✅ Category Routes */}
+          <Route path="/category/:id" element={<ProtectedRoute><CategoryDetails /></ProtectedRoute>} />  
+
+          {/* ✅ Other Routes */}
           <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
           <Route path="/blogs" element={<ProtectedRoute><Blogs /></ProtectedRoute>} />

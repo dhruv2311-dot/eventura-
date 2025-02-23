@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FaShareAlt, FaGift } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import './discount.css';
-
+import Navbar from './navbar';
+import Footer from './footer';
 
 const DiscountPage = () => {
   const [timeLeft, setTimeLeft] = useState({ hours: 24, minutes: 45, seconds: 60 });
@@ -28,6 +29,8 @@ const DiscountPage = () => {
   }, []);
 
   return (
+    <>
+    <Navbar />
     <div className="discount-container">
       <div className="header-section">
         <div className="header-content">
@@ -121,6 +124,8 @@ const DiscountPage = () => {
         </div>
       </div>
     </div>
+    <Footer />
+    </>
   );
 };
 

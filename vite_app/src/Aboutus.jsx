@@ -3,9 +3,13 @@ import { FaLightbulb, FaUsers, FaChartLine } from "react-icons/fa";
 import { motion } from "framer-motion";
 import "./AboutUs.css";
 import Founder from './assets/image.jpg'
+import Navbar from './navbar';
+import Footer from './footer';
 
 const About = () => {
   return (
+    <>
+    <Navbar/>
     <div className="about-container">
       {/* Top Banner Section */}
       <motion.div
@@ -110,6 +114,8 @@ const About = () => {
         </div>
       </motion.div>
     </div>
+    <Footer/>
+    </>
   );
 };
 

@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import "./feedback.css";
 import Footer from "./footer";
+import Navbar from "./navbar";
+
 
 const Feedback = () => {
   const [rating, setRating] = useState(0);
@@ -85,6 +87,7 @@ const Feedback = () => {
 
   return (
     <>
+      <Navbar />
       <div className="feedback-page">
         <div className="hero">
           <div className="hero-content">
@@ -132,32 +135,32 @@ const Feedback = () => {
           {error && <p className="error-message">{error}</p>}
         </motion.form>
         <div className="recent-feedback">
-        <h2>Recent Feedback</h2>
-        <motion.div
-          className="feedback-list"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          {recentFeedback.map((item, index) => (
-            <motion.div
-              className="feedback-item"
-              key={index}
-              whileHover={{ scale: 1.05 }}
-            >
-              <img src={item.image} alt={item.name} className="feedback-image" />
-              <div>
-                <h3>{item.name}</h3>
-                <p>{item.review}</p>
-                <div className="stars">
-                  {"★".repeat(item.stars)}
-                  {"☆".repeat(5 - item.stars)}
+          <h2>Recent Feedback</h2>
+          <motion.div
+            className="feedback-list"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            {recentFeedback.map((item, index) => (
+              <motion.div
+                className="feedback-item"
+                key={index}
+                whileHover={{ scale: 1.05 }}
+              >
+                <img src={item.image} alt={item.name} className="feedback-image" />
+                <div>
+                  <h3>{item.name}</h3>
+                  <p>{item.review}</p>
+                  <div className="stars">
+                    {"★".repeat(item.stars)}
+                    {"☆".repeat(5 - item.stars)}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </div>
       <Footer />
     </>

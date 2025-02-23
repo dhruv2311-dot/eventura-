@@ -12,10 +12,10 @@
    width: auto;
   }
   
-  .nav-links {
+  .nav-links1 {
     list-style: none;
     display: flex;
-    gap: 20px;
+    gap: 144px;
   }
   
   .nav-links li {
