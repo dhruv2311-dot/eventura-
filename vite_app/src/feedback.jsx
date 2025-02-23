@@ -67,7 +67,7 @@ const Feedback = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/feedback", formData, {
+      const response = await axios.post("https://eventura-8.onrender.com/feedback", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("Feedback submitted successfully!");

@@ -9,7 +9,7 @@ const uri = "mongodb+srv://dhruvsonagra23:dhruv1723@event23.6qktv.mongodb.net/";
 const dbName = "eventura";
 
 let db;
-let categories,inquiries, reviews, team, venues;
+let categories, inquiries, reviews, team, venues;
 
 // Middleware to parse JSON
 app.use(express.json());
@@ -21,11 +21,13 @@ async function initializeDatabase() {
         console.log('Connected to MongoDB');
 
         db = client.db(dbName);
-        categories = db.collection('categories');
+        categoriesCollection = db.collection('categories');
         inquiries = db.collection('inquiries');
         reviews = db.collection('reviews');
         team = db.collection('team');
-        venues = db.collection('venues');
+        venuesCollection = db.collection('venues');
+
+        defineRoutes();
 
         app.listen(port, () => {
             console.log(`Server running at http://localhost:${port}`);
@@ -37,205 +39,318 @@ async function initializeDatabase() {
 }
 initializeDatabase();
 
-// CRUD Routes for Categories
+// ✅ GET All Categories
+function defineRoutes() {
 
-// GET All Categories
-app.get('/categories', async (req, res) => {
-    try {
-        const categoryList = await categories.find().toArray();
-        res.status(200).json(categoryList);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// GET a Single Category by ID
-app.get('/categories/:id', async (req, res) => {
-    try {
-        const category = await categories.findOne({ _id: new ObjectId(req.params.id) });
-        if (!category) return res.status(404).json({ message: 'Category not found' });
-        res.status(200).json(category);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// POST a New Category
-app.post('/categories', async (req, res) => {
-    try {
-        const newCategory = req.body;
-
-        // Validate input
-        if (!newCategory.name || !newCategory.description) {
-            return res.status(400).json({ message: 'Name and description are required.' });
+    // ✅ GET All Categories
+    app.get('/categories', async (req, res) => {
+        try {
+            const categories = await categoriesCollection.find().toArray();
+            res.status(200).json(categories);
+        } catch (error) {
+            console.error("🔴 Error fetching categories:", error.message, error.stack);
+            res.status(500).json({ message: "Server error", error: error.message });
         }
+    });
 
-        // Insert the new category into the collection
-        const result = await categories.insertOne(newCategory);
+    // ✅ GET Category by ID
+    app.get('/categories/:id', async (req, res) => {
+        try {
+            const categoryId = req.params.id;
 
-        // Construct a response using the inserted ID
-        res.status(201).json({
-            message: 'Category created successfully',
-            category: { _id: result.insertedId, ...newCategory },
-        });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+            if (!ObjectId.isValid(categoryId)) {
+                return res.status(400).json({ message: "Invalid category ID" });
+            }
 
-// PUT (Update Entire Category by ID)
-app.put('/categories/:id', async (req, res) => {
-    try {
-        const { name, description } = req.body;
-        if (!name || !description) {
-            return res.status(400).json({ message: 'Name and description are required.' });
+            const category = await categoriesCollection.findOne({ _id: new ObjectId(categoryId) });
+
+            if (!category) {
+                return res.status(404).json({ message: "Category not found" });
+            }
+
+            res.status(200).json(category);
+        } catch (error) {
+            console.error("🔴 Error fetching category:", error.message, error.stack);
+            res.status(500).json({ message: "Server error", error: error.message });
         }
-        const result = await categories.updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: { name, description } }
-        );
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: 'Category not found' });
-        }
-        res.status(200).json({ message: 'Category updated successfully' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
+    });
 
-// PATCH (Update Partial Fields of a Category by ID)
-app.patch('/categories/:id', async (req, res) => {
-    try {
-        const updates = req.body;
-        const result = await categories.updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: updates }
-        );
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: 'Category not found' });
-        }
-        res.status(200).json({ message: 'Category updated successfully' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
+    // ✅ POST Create New Category
+    app.post('/categories', async (req, res) => {
+        try {
+            const { name, description, image_url, key_highlights, services, featured_images, additional_info } = req.body;
 
-// DELETE a Category by ID
-app.delete('/categories/:id', async (req, res) => {
-    try {
-        const result = await categories.deleteOne({ _id: new ObjectId(req.params.id) });
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ message: 'Category not found' });
+            if (!name || !description || !image_url) {
+                return res.status(400).json({ message: "Name, description, and image URL are required" });
+            }
+
+            const newCategory = {
+                name,
+                description,
+                image_url,
+                key_highlights: key_highlights || [],
+                services: services || [],
+                featured_images: featured_images || [],
+                additional_info: additional_info || ""
+            };
+
+            const result = await categoriesCollection.insertOne(newCategory);
+            res.status(201).json({ message: "Category created successfully", categoryId: result.insertedId });
+
+        } catch (error) {
+            console.error("🔴 Error creating category:", error.message, error.stack);
+            res.status(500).json({ message: "Server error", error: error.message });
         }
-        res.status(200).json({ message: 'Category deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+    });
+
+    // ✅ PUT Update Entire Category
+    app.put('/categories/:id', async (req, res) => {
+        try {
+            const categoryId = req.params.id;
+            const { name, description, image_url, key_highlights, services, featured_images, additional_info } = req.body;
+
+            if (!ObjectId.isValid(categoryId)) {
+                return res.status(400).json({ message: "Invalid category ID" });
+            }
+
+            if (!name || !description || !image_url) {
+                return res.status(400).json({ message: "Name, description, and image URL are required" });
+            }
+
+            const updatedCategory = {
+                name,
+                description,
+                image_url,
+                key_highlights: key_highlights || [],
+                services: services || [],
+                featured_images: featured_images || [],
+                additional_info: additional_info || ""
+            };
+
+            const result = await categoriesCollection.replaceOne(
+                { _id: new ObjectId(categoryId) },
+                updatedCategory
+            );
+
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({ message: "Category not found or not modified" });
+            }
+
+            res.status(200).json({ message: "Category updated successfully" });
+
+        } catch (error) {
+            console.error("🔴 Error updating category:", error.message, error.stack);
+            res.status(500).json({ message: "Server error", error: error.message });
+        }
+    });
+
+    // ✅ PATCH Update Partial Category
+    app.patch('/categories/:id', async (req, res) => {
+        try {
+            const categoryId = req.params.id;
+            const updates = req.body;
+
+            if (!ObjectId.isValid(categoryId)) {
+                return res.status(400).json({ message: "Invalid category ID" });
+            }
+
+            const result = await categoriesCollection.updateOne(
+                { _id: new ObjectId(categoryId) },
+                { $set: updates }
+            );
+
+            if (result.modifiedCount === 0) {
+                return res.status(404).json({ message: "Category not found or not modified" });
+            }
+
+            res.status(200).json({ message: "Category updated successfully" });
+
+        } catch (error) {
+            console.error("🔴 Error updating category:", error.message, error.stack);
+            res.status(500).json({ message: "Server error", error: error.message });
+        }
+    });
+
+    // ✅ DELETE Category by ID
+    app.delete('/categories/:id', async (req, res) => {
+        try {
+            const categoryId = req.params.id;
+
+            if (!ObjectId.isValid(categoryId)) {
+                return res.status(400).json({ message: "Invalid category ID" });
+            }
+
+            const result = await categoriesCollection.deleteOne({ _id: new ObjectId(categoryId) });
+
+            if (result.deletedCount === 0) {
+                return res.status(404).json({ message: "Category not found" });
+            }
+
+            res.status(200).json({ message: "Category deleted successfully" });
+
+        } catch (error) {
+            console.error("🔴 Error deleting category:", error.message, error.stack);
+            res.status(500).json({ message: "Server error", error: error.message });
+        }
+    });
 
 
 // Get all venues
 app.get('/venues', async (req, res) => {
     try {
-        const venueList = await venues.find().toArray();
-        res.status(200).json(venueList);
+        const venues = await venuesCollection.find().toArray();
+        res.status(200).json(venues);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("🔴 Error fetching venues:", error.message, error.stack);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
-// Get a single venue by ID
+// ✅ GET Venue by ID
 app.get('/venues/:id', async (req, res) => {
     try {
-        const venue = await venues.findOne({ _id: new ObjectId(req.params.id) });
-        if (!venue) return res.status(404).json({ message: 'Venue not found' });
+        const venueId = req.params.id;
+
+        if (!ObjectId.isValid(venueId)) {
+            return res.status(400).json({ message: "Invalid venue ID" });
+        }
+
+        const venue = await venuesCollection.findOne({ _id: new ObjectId(venueId) });
+
+        if (!venue) {
+            return res.status(404).json({ message: "Venue not found" });
+        }
+
         res.status(200).json(venue);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("🔴 Error fetching venue:", error.message, error.stack);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
-// POST a new venue
+// ✅ POST Create New Venue
 app.post('/venues', async (req, res) => {
     try {
-        const newVenue = req.body;
+        const { name, location, capacity, price_per_day, images, description, key_highlights, services, additional_info } = req.body;
 
-        // Validate required fields
-        if (!newVenue.name || !newVenue.location || !newVenue.capacity) {
-            return res.status(400).json({ message: 'Name, location, and capacity are required.' });
+        if (!name || !location || !capacity || !price_per_day || !images || !description) {
+            return res.status(400).json({ message: "Missing required fields" });
         }
 
-        const result = await venues.insertOne(newVenue);
+        const newVenue = {
+            name,
+            location,
+            capacity,
+            price_per_day,
+            images,
+            description,
+            key_highlights: key_highlights || [],
+            services: services || [],
+            additional_info: additional_info || ""
+        };
 
-        res.status(201).json({
-            message: 'Venue created successfully',
-            venue: { _id: result.insertedId, ...newVenue },
-        });
+        const result = await venuesCollection.insertOne(newVenue);
+        res.status(201).json({ message: "Venue created successfully", venueId: result.insertedId });
+
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error("🔴 Error creating venue:", error.message, error.stack);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
-// PUT (Update Entire Venue by ID)
+// ✅ PUT Update Entire Venue
 app.put('/venues/:id', async (req, res) => {
     try {
-        const updatedVenue = req.body;
+        const venueId = req.params.id;
+        const { name, location, capacity, price_per_day, images, description, key_highlights, services, additional_info } = req.body;
 
-        // Validate required fields
-        if (!updatedVenue.name || !updatedVenue.location || !updatedVenue.capacity) {
-            return res.status(400).json({ message: 'Name, location, and capacity are required.' });
+        if (!ObjectId.isValid(venueId)) {
+            return res.status(400).json({ message: "Invalid venue ID" });
         }
 
-        const result = await venues.updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: updatedVenue }
+        if (!name || !location || !capacity || !price_per_day || !images || !description) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const updatedVenue = {
+            name,
+            location,
+            capacity,
+            price_per_day,
+            images,
+            description,
+            key_highlights: key_highlights || [],
+            services: services || [],
+            additional_info: additional_info || ""
+        };
+
+        const result = await venuesCollection.replaceOne(
+            { _id: new ObjectId(venueId) },
+            updatedVenue
         );
 
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: 'Venue not found' });
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ message: "Venue not found or not modified" });
         }
 
-        res.status(200).json({ message: 'Venue updated successfully' });
+        res.status(200).json({ message: "Venue updated successfully" });
+
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error("🔴 Error updating venue:", error.message, error.stack);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
-// PATCH (Update Partial Fields of a Venue by ID)
+// ✅ PATCH Update Partial Venue
 app.patch('/venues/:id', async (req, res) => {
     try {
+        const venueId = req.params.id;
         const updates = req.body;
 
-        const result = await venues.updateOne(
-            { _id: new ObjectId(req.params.id) },
+        if (!ObjectId.isValid(venueId)) {
+            return res.status(400).json({ message: "Invalid venue ID" });
+        }
+
+        const result = await venuesCollection.updateOne(
+            { _id: new ObjectId(venueId) },
             { $set: updates }
         );
 
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: 'Venue not found' });
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ message: "Venue not found or not modified" });
         }
 
-        res.status(200).json({ message: 'Venue updated successfully' });
+        res.status(200).json({ message: "Venue updated successfully" });
+
     } catch (error) {
-        res.status(400).json({ error: error.message });
+        console.error("🔴 Error updating venue:", error.message, error.stack);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
-// DELETE a venue by ID
+// ✅ DELETE Venue by ID
 app.delete('/venues/:id', async (req, res) => {
     try {
-        const result = await venues.deleteOne({ _id: new ObjectId(req.params.id) });
+        const venueId = req.params.id;
 
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ message: 'Venue not found' });
+        if (!ObjectId.isValid(venueId)) {
+            return res.status(400).json({ message: "Invalid venue ID" });
         }
 
-        res.status(200).json({ message: 'Venue deleted successfully' });
+        const result = await venuesCollection.deleteOne({ _id: new ObjectId(venueId) });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: "Venue not found" });
+        }
+
+        res.status(200).json({ message: "Venue deleted successfully" });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("🔴 Error deleting venue:", error.message, error.stack);
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
-
+}
 // Get all team members
 app.get('/team', async (req, res) => {
     try {
@@ -339,108 +454,7 @@ app.delete('/team/:id', async (req, res) => {
 });
 
 // Get all inquiries
-app.get('/inquiries', async (req, res) => {
-    try {
-        const inquiriesList = await inquiries.find().toArray();
-        res.status(200).json(inquiriesList);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
-// Get a single inquiry by ID
-app.get('/inquiries/:id', async (req, res) => {
-    try {
-        const inquiry = await inquiries.findOne({ _id: new ObjectId(req.params.id) });
-        if (!inquiry) return res.status(404).json({ message: 'Inquiry not found' });
-        res.status(200).json(inquiry);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// POST a new inquiry
-app.post('/inquiries', async (req, res) => {
-    try {
-        const newInquiry = req.body;
-
-        // Validate required fields
-        if (!newInquiry.name || !newInquiry.email || !newInquiry.message) {
-            return res.status(400).json({ message: 'Name, email, and message are required.' });
-        }
-
-        const result = await inquiries.insertOne(newInquiry);
-
-        res.status(201).json({
-            message: 'Inquiry created successfully',
-            inquiry: { _id: result.insertedId, ...newInquiry },
-        });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// PUT (Update Entire Inquiry by ID)
-app.put('/inquiries/:id', async (req, res) => {
-    try {
-        const updatedInquiry = req.body;
-
-        // Validate required fields
-        if (!updatedInquiry.name || !updatedInquiry.email || !updatedInquiry.message) {
-            return res.status(400).json({ message: 'Name, email, and message are required.' });
-        }
-
-        const result = await inquiries.updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: updatedInquiry }
-        );
-
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: 'Inquiry not found' });
-        }
-
-        res.status(200).json({ message: 'Inquiry updated successfully' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// PATCH (Update Partial Fields of an Inquiry by ID)
-app.patch('/inquiries/:id', async (req, res) => {
-    try {
-        const updates = req.body;
-
-        const result = await inquiries.updateOne(
-            { _id: new ObjectId(req.params.id) },
-            { $set: updates }
-        );
-
-        if (result.matchedCount === 0) {
-            return res.status(404).json({ message: 'Inquiry not found' });
-        }
-
-        res.status(200).json({ message: 'Inquiry updated successfully' });
-    } catch (error) {
-        res.status(400).json({ error: error.message });
-    }
-});
-
-// DELETE an inquiry by ID
-app.delete('/inquiries/:id', async (req, res) => {
-    try {
-        const result = await inquiries.deleteOne({ _id: new ObjectId(req.params.id) });
-
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ message: 'Inquiry not found' });
-        }
-
-        res.status(200).json({ message: 'Inquiry deleted successfully' });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// Get all reviews
 app.get('/reviews', async (req, res) => {
     try {
         const reviewsList = await reviews.find().toArray();

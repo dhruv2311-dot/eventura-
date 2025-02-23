@@ -15,7 +15,7 @@ const Footer = () => {
   const handleFeedback = () => {
     navigate('/feedback');
   };
-
+ 
   return (
     <footer className="footer">
       <div className="footer-section">
@@ -27,7 +27,7 @@ const Footer = () => {
       <div className="footer-section">
         <h4>GET HELP</h4>
         <p>Your Status</p>
-        <p>Query</p>
+        <p  >Query</p>
         <p>Policies</p>
         <p>Payment Option</p>
         <p onClick={handlecontactus}>Contact Us</p>
