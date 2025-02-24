@@ -18,7 +18,7 @@ const LandingPage = () => {
         if (isAuthenticated && user) {
             const hasReceivedEmail = localStorage.getItem(`welcome_email_${user.email}`);
             if (!hasReceivedEmail) {
-                axios.post("http://localhost:5000/send-welcome-email", {
+                axios.post("https://eventura-9.onrender.com/send-welcome-email", {
                     email: user.email,
                     name: user.name,
                 })
@@ -44,16 +44,13 @@ const LandingPage = () => {
                     <li onClick={handleblogs}>Blog</li>
                 </ul>
                 <div className="auth-buttons">
-                    {!isAuthenticated ? (
-                        <button className="signin" onClick={() => loginWithRedirect()}>
-                            Sign In
-                        </button>
-                    ) : (
-                        <button className="signup" onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}>
-                            Logout
-                        </button>
-                    )}
-                </div>
+    {!isAuthenticated && (
+        <button className="signin" onClick={() => loginWithRedirect()}>
+            Sign In
+        </button>
+    )}
+</div>
+
             </nav>
            
             {/* Hero Section */}

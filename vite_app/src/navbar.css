@@ -71,7 +71,7 @@
   background-color: white;
 }
 
-.talk-button {
+.logout-button {
   background-color: #fcd34d;
   padding: 8px 16px;
   border: none;
@@ -81,7 +81,7 @@
   transition: background-color 0.3s;
 }
 
-.talk-button:hover {
+.logout-button:hover {
   background-color: #fbbf24;
 }
 
@@ -132,7 +132,7 @@
   .language-select {
     padding: 4px;
   }
-  .talk-button {
+  .logout-button {
     padding: 4px 8px;
   }
 }
@@ -159,7 +159,7 @@
   .language-select {
     padding: 3px;
   }
-  .talk-button {
+  .logout-button {
     padding: 3px 6px;
   }
 }
