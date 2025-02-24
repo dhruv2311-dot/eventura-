@@ -4,7 +4,9 @@ import { FiSearch, FiUser } from 'react-icons/fi';
 import {Link} from 'react-router-dom'
 import './navbar.css'
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from "@auth0/auth0-react";
 const navbar = () => {
+  const { logout, isAuthenticated } = useAuth0()
   const navigate = useNavigate();
   const handleprofile=()=>{
     navigate('/profile')
@@ -33,7 +35,14 @@ const navbar = () => {
           <select className="language-select">
             <option>ENGLISH</option>
           </select>
-          <button className="talk-button">Let's Talk</button>
+          {isAuthenticated && (
+            <button 
+              className="logout-button" 
+              onClick={() => logout({ logoutParams: { returnTo: window.location.origin } })}
+            >
+              Logout
+            </button>
+          )}
         </div>
       </header>
 
