@@ -1,24 +1,35 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./landingpage.css"; // External CSS file
 import logo from './assets/eventura.png';
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from 'react-router-dom'; 
+import axios from "axios";
+
 const LandingPage = () => {
     const navigate = useNavigate();
-    const handlehome=()=>{
-        navigate('/home')
-      }
-    const handleevents=()=>{
-        navigate('/events')
-      }
-    const handlevenues=()=>{
-        navigate('/venue')
-      }
-    const handleblogs=()=>{
-        navigate('/blogs')
-      }
-     
-    const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+    const handlehome = () => { navigate('/home'); };
+    const handleevents = () => { navigate('/events'); };
+    const handlevenues = () => { navigate('/venue'); };
+    const handleblogs = () => { navigate('/blogs'); };
+    
+    const { loginWithRedirect, logout, isAuthenticated, user } = useAuth0();
+
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            const hasReceivedEmail = localStorage.getItem(`welcome_email_${user.email}`);
+            if (!hasReceivedEmail) {
+                axios.post("http://localhost:5000/send-welcome-email", {
+                    email: user.email,
+                    name: user.name,
+                })
+                .then(() => {
+                    localStorage.setItem(`welcome_email_${user.email}`, "sent");
+                })
+                .catch((error) => console.error("Email sending error:", error));
+            }
+            navigate("/home");
+        }
+    }, [isAuthenticated, user, navigate]);
     return (
         <div>
            
