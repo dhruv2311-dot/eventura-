@@ -1,4 +1,32 @@
 /* Wrapper for both sections */
+/* 🔄 Projects Page Specific Loader */
+.projects-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+  backdrop-filter: blur(5px); /* ✅ Background blur */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* 🔄 Loader GIF */
+.projects-loader {
+  width: 200px; /* Adjust size */
+  height: 200px;
+}
+
+/* ✅ Blur effect when loading */
+.projects-blur-background {
+  filter: blur(5px);
+  pointer-events: none; /* Disable user interaction */
+}
+
+
 .projects-wrapper {
   display: flex;
   flex-direction: column;

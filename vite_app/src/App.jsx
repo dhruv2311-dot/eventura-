@@ -1,14 +1,14 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import { ToastContainer } from "react-toastify"; // ✅ Import ToastContainer
-import "react-toastify/dist/ReactToastify.css"; // ✅ Toastify CSS import
-import { DataProvider } from "./DataFetcher"; // Centralized Data Provider
+import { ToastContainer } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css"; 
+import { DataProvider } from "./DataFetcher"; 
 import './App.css';
 import Homepage from "./homepage";
 import Venue from "./venue";
-import VenueDetails from "./VenueDetails"; // Venue Detail Page
-import CategoryDetails from "./CategoryDetails"; // Category Detail Page
+import VenueDetails from "./VenueDetails"; 
+import CategoryDetails from "./CategoryDetails"; 
 import Blogs from "./Blogs";
 import Events from "./events";
 import Contactus from "./Contactus";
@@ -29,7 +29,10 @@ function App() {
       <Router>
         {isAuthenticated && <Authuser />}
         <Routes>
-          <Route path="/" element={<Landingpage />} />
+          {/* ✅ Agar user login hai toh / pe Landingpage load na ho */}
+          <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Landingpage />} />
+
+          {/* ✅ Home Page - Protected */}
           <Route path="/home" element={<ProtectedRoute><Homepage /></ProtectedRoute>} />
 
           {/* ✅ Venue Routes */}
@@ -48,6 +51,9 @@ function App() {
           <Route path="/aboutus" element={<ProtectedRoute><AboutUs /></ProtectedRoute>} />
           <Route path="/discounts" element={<ProtectedRoute><Discount /></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
+
+          {/* ✅ 404 Page */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
         {/* ✅ ToastContainer added globally */}
