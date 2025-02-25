@@ -3,8 +3,8 @@ import Footer from './footer';
 import './venues.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from './Navbar';
-
+import Navbar from './navbar';
+import loaderGif from './assets/loader.gif'; 
 const Venue = () => {
   const navigate = useNavigate();
   const [searchCategory, setSearchCategory] = useState(""); // Venue Name
@@ -45,10 +45,17 @@ const Venue = () => {
 
     setFilteredVenues(filtered);
   };
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <img src={loaderGif} alt="Loading..." className="loader" />
+      </div>
+    );
+  }
 
-  if (loading) return <h2 className="loading">Loading venues...</h2>;
-  if (error) return <h2 className="error">Error loading venues.</h2>;
-
+  if (error) {
+    return <h2 className="error">Error loading venues.</h2>;
+  }
   return (
     <>
       <Navbar />
@@ -122,109 +129,4 @@ const Venue = () => {
 };
 
 export default Venue;
-
-// import React, { useState, useEffect } from 'react';
-// import Footer from './footer';
-// import './venues.css';
-// import { useNavigate } from 'react-router-dom';
-// import axios from 'axios';
-// import Navbar from './Navbar';
-
-// const Venue = () => {
-//   const navigate = useNavigate();
-//   const [category, setCategory] = useState('');
-//   const [location, setLocation] = useState('');
-//   const [allVenues, setAllVenues] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-
-//   useEffect(() => {
-//     axios
-//       .get("https://eventura-2.onrender.com/venues")
-//       .then((response) => {
-//         setAllVenues(response.data);
-//         setLoading(false);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching venues:", error);
-//         setError(error);
-//         setLoading(false);
-//       });
-//   }, []);
-
-//   const handleSearch = () => {
-//     const queryParams = new URLSearchParams({
-//       category,
-//       location,
-//     }).toString();
-//     navigate(`/venues?${queryParams}`);
-//   };
-
-//   if (loading) return <h2 className="loading">Loading venues...</h2>;
-//   if (error) return <h2 className="error">Error loading venues.</h2>;
-
-//   return (
-//     <>
-//       <Navbar />
-      
-//       {/* Hero Section */}
-//       <section
-//         className="hero-section-2"
-//         style={{
-//           backgroundImage:
-//             "url('https://i0.wp.com/suessmoments.com/wp-content/uploads/sites/10014/2023/02/website-shadowbrook-nj-wedding-photos-7153-photography-by-SUESS-MOMENTS.jpg?ssl=1')",
-//         }}
-//       >
-//         <div className="overlay2">
-//           <h2 className="hero-title2">OUR VENUES</h2>
-//           <div className="search-filters2">
-//             <input
-//               type="text"
-//               placeholder="Search Category"
-//               className="search-input"
-//               value={category}
-//               onChange={(e) => setCategory(e.target.value)}
-//             />
-//             <input
-//               type="text"
-//               placeholder="Search Location"
-//               className="search-input"
-//               value={location}
-//               onChange={(e) => setLocation(e.target.value)}
-//             />
-//             <button className="search-button2" onClick={handleSearch}>
-//               Search
-//             </button>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* All Venues Section */}
-//       <div className="venues-container">
-//         <h2>📍 All Venues</h2>
-//         <div className="venues-grid">
-//           {allVenues.map((venue) => (
-//             <div 
-//               key={venue._id} 
-//               className="venue-card"
-//               onClick={() => navigate(`/venue/${venue._id}`)} // ✅ Navigate to VenueDetails
-//             >
-//               <img src={venue.images?.[0]} alt={venue.name} className="venue-image" />
-//               <h3 className="venue-name">{venue.name}</h3>
-//               <p className="venue-location">📍 {venue.location}</p>
-//               <p className="venue-price">💰 ${venue.price_per_day} per day</p>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* Call to Action */}
-     
-
-//       <Footer />
-//     </>
-//   );
-// };
-
-// export default Venue;
 
