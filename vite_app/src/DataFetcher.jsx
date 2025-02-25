@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import loaderGif from "./assets/loader.gif"; // ✅ Loader GIF import
 
 const DataContext = createContext();
 
@@ -36,6 +37,14 @@ export const DataProvider = ({ children }) => {
     fetchData();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="loader-container">
+        <img src={loaderGif} alt="Loading..." className="loader" />
+      </div>
+    );
+  }
+
   return (
     <DataContext.Provider value={{ categories, venues, team, reviews, loading, error }}>
       {children}
@@ -44,4 +53,3 @@ export const DataProvider = ({ children }) => {
 };
 
 export const useData = () => useContext(DataContext);
-

@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { ToastContainer } from "react-toastify"; // ✅ Import ToastContainer
 import "react-toastify/dist/ReactToastify.css"; // ✅ Toastify CSS import
 import { DataProvider } from "./DataFetcher"; // Centralized Data Provider
-
+import './App.css';
 import Homepage from "./homepage";
 import Venue from "./venue";
 import VenueDetails from "./VenueDetails"; // Venue Detail Page
