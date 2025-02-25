@@ -52,3 +52,128 @@ app.get('/blogs', async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
 });
+
+// 📌 **2. GET Single Blog by ID**
+app.get('/blogs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid blog ID" });
+        }
+
+        const blog = await blogsCollection.findOne({ _id: new ObjectId(id) });
+
+        if (!blog) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+
+        res.status(200).json(blog);
+
+    } catch (error) {
+        console.error("🔴 Error fetching blog:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
+// 📌 **3. POST (Create New Blog)**
+app.post('/blogs', async (req, res) => {
+    try {
+        if (!db || !blogsCollection) {
+            return res.status(500).json({ message: "Database not initialized" });
+        }
+
+        const { title, author, date, category, image, content, video, video_description, additional_images } = req.body;
+
+        // Validate required fields
+        if (!title || !author || !date || !category || !image || !content) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const newBlog = { title, author, date, category, image, content, video, video_description, additional_images, status: "published" };
+        const result = await blogsCollection.insertOne(newBlog);
+
+        res.status(201).json({ message: "Blog created successfully", blogId: result.insertedId });
+
+    } catch (error) {
+        console.error("🔴 Error creating blog:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
+// 📌 **4. PUT (Update Entire Blog)**
+app.put('/blogs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid blog ID" });
+        }
+
+        const { title, author, date, category, image, content, video, video_description, additional_images } = req.body;
+
+        if (!title || !author || !date || !category || !image || !content) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        const updatedBlog = { title, author, date, category, image, content, video, video_description, additional_images, status: "published" };
+        const result = await blogsCollection.updateOne({ _id: new ObjectId(id) }, { $set: updatedBlog });
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ message: "Blog not found or no changes made" });
+        }
+
+        res.status(200).json({ message: "Blog updated successfully" });
+
+    } catch (error) {
+        console.error("🔴 Error updating blog:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
+// 📌 **5. PATCH (Update Partial Blog Data)**
+app.patch('/blogs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid blog ID" });
+        }
+
+        const updateFields = req.body;
+        if (Object.keys(updateFields).length === 0) {
+            return res.status(400).json({ message: "No fields provided for update" });
+        }
+
+        const result = await blogsCollection.updateOne({ _id: new ObjectId(id) }, { $set: updateFields });
+
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ message: "Blog not found or no changes made" });
+        }
+
+        res.status(200).json({ message: "Blog updated successfully" });
+
+    } catch (error) {
+        console.error("🔴 Error updating blog:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
+// 📌 **6. DELETE (Remove a Blog)**
+app.delete('/blogs/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid blog ID" });
+        }
+
+        const result = await blogsCollection.deleteOne({ _id: new ObjectId(id) });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+
+        res.status(200).json({ message: "Blog deleted successfully" });
+
+    } catch (error) {
+        console.error("🔴 Error deleting blog:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
