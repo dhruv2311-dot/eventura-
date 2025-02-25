@@ -4,7 +4,7 @@ import axios from "axios";
 import "./feedback.css";
 import Footer from "./footer";
 import Navbar from "./navbar";
-
+import { toast } from "react-toastify";
 
 const Feedback = () => {
   const [rating, setRating] = useState(0);
@@ -50,7 +50,7 @@ const Feedback = () => {
       setFeedback({ ...feedback, file: file });
       setFilePreview(URL.createObjectURL(file));
     } else {
-      setError("Please upload a valid image file (JPG, PNG) not exceeding 5MB.");
+      toast.error("Please upload a valid image file (JPG, PNG) not exceeding 5MB.");
     }
   };
 
@@ -72,13 +72,13 @@ const Feedback = () => {
       const response = await axios.post("https://eventura-8.onrender.com/feedback", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      alert("Feedback submitted successfully!");
+      toast.success("Feedback submitted successfully!");
       setFeedback({ name: "", email: "", message: "", file: null });
       setRating(0);
       setFilePreview(null);
       fileInputRef.current.value = null;
     } catch (error) {
-      setError("Error submitting feedback. Please try again.");
+      toast.error("Error submitting feedback. Please try again.");
       console.error(error);
     } finally {
       setLoading(false);

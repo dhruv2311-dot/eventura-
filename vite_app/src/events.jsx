@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 import axios from "axios";
-import { FaWhatsapp, FaInstagram, FaTwitter, FaFacebookF } from 'react-icons/fa';
+
+import { toast } from "react-toastify";
 import './events.css';
 import Footer from './footer'
-import Navbar from './Navbar';
+import Navbar from './navbar';
 
 const Events = () => {
   const navigate = useNavigate();
@@ -38,11 +39,11 @@ const Events = () => {
     e.preventDefault();
     try {
       await axios.post("https://eventura-5.onrender.com/events", eventData);
-      alert("Event created successfully!");
+      toast.success("Event created successfully!");
       navigate("/events");
     } catch (error) {
       console.error("Error creating event:", error);
-      alert("Failed to create event");
+      toast.error("Failed to create event");
     }
   };
 
