@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 import { FiMapPin, FiPhone, FiMail, FiClock } from "react-icons/fi";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 import "./ContactUs.css";
@@ -21,11 +22,11 @@ const ContactUs = () => {
     e.preventDefault();
     try {
       await axios.post("https://eventura-6.onrender.com/contact", formData);
-      alert("Message sent successfully!");
+      toast.success("Message sent successfully!");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Failed to send message");
+      toast.error("Failed to send message");
     }
   };
 

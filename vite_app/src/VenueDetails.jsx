@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useData } from './DataFetcher';
 import './VenueDetails.css'; // Import CSS
-import Navbar from './Navbar';
+import Navbar from './navbar';
 import Footer from './footer';
 const VenueDetails = () => {
   const { id } = useParams();
