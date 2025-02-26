@@ -13,7 +13,7 @@ const Blogs = () => {
 
   useEffect(() => {
     axios
-      .get("https://eventura-4.onrender.com/blogs") // ✅ API URL
+      .get("https://eventura-4.onrender.com/blogs") 
       .then((response) => {
         setBlogs(response.data);
         setLoading(false);
@@ -54,8 +54,8 @@ const Blogs = () => {
                 <div className="trending-content">
                   <h3>{blog.title}</h3>
                   <p>{blog.author} • {new Date(blog.date).toDateString()}</p>
-                  {/* ✅ Short Description Using `content` */}
-                  <p>{blog.content.replace(/(<([^>]+)>)/gi, "").substring(0, 150)}...</p>
+                  {/* ✅ Content Null Check (Prevent Errors) */}
+                  <p>{blog.content ? blog.content.replace(/(<([^>]+)>)/gi, "").substring(0, 150) + "..." : "No description available."}</p>
                   <button onClick={() => navigate(`/blog/${blog._id}`)}>Know More</button>
                 </div>
               </div>
@@ -73,8 +73,8 @@ const Blogs = () => {
                 <div className="latest-content">
                   <h3>{blog.title}</h3>
                   <p>{blog.author} • {new Date(blog.date).toDateString()}</p>
-                  {/* ✅ Short Description Using `content` */}
-                  <p>{blog.content.replace(/(<([^>]+)>)/gi, "").substring(0, 150)}...</p>
+                  {/* ✅ Content Null Check (Prevent Errors) */}
+                  <p>{blog.content ? blog.content.replace(/(<([^>]+)>)/gi, "").substring(0, 150) + "..." : "No description available."}</p>
                   <button onClick={() => navigate(`/blog/${blog._id}`)}>Know More</button>
                 </div>
               </div>
