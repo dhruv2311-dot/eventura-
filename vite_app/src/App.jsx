@@ -10,6 +10,7 @@ import Venue from "./venue";
 import VenueDetails from "./VenueDetails"; 
 import CategoryDetails from "./CategoryDetails"; 
 import Blogs from "./Blogs";
+import BlogDetails from "./BlogDetails";  // ✅ Import BlogDetails Component
 import Events from "./events";
 import Contactus from "./Contactus";
 import Projects from "./projects";
@@ -46,6 +47,7 @@ function App() {
           <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
           <Route path="/blogs" element={<ProtectedRoute><Blogs /></ProtectedRoute>} />
+          <Route path="/blog/:id" element={<ProtectedRoute><BlogDetails /></ProtectedRoute>} /> {/* ✅ Blog Details Route Added */}
           <Route path="/contactus" element={<ProtectedRoute><Contactus /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/aboutus" element={<ProtectedRoute><AboutUs /></ProtectedRoute>} />
