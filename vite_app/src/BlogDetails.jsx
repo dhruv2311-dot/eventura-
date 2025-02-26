@@ -25,6 +25,12 @@ const BlogDetails = () => {
 
   if (!blog) return <h2>Loading...</h2>;
 
+  // ✅ Convert YouTube URL to Embed URL (Fixing iframe issue)
+  const getEmbedUrl = (url) => {
+    if (!url) return "";
+    return url.replace("watch?v=", "embed/");
+  };
+
   return (
     <>
       <Navbar />
@@ -32,19 +38,17 @@ const BlogDetails = () => {
         <h1>{blog.title}</h1>
         <p><strong>Author:</strong> {blog.author} | <strong>Date:</strong> {new Date(blog.date).toDateString()}</p>
         
-        {/* ✅ Details Page में दूसरी Image Show होगी */}
-        <img src={blog.detailImage} alt={blog.title} className="blog-cover" />
+        <img src={blog.image} alt={blog.title} className="blog-cover" />
 
-        <div className="blog-content" dangerouslySetInnerHTML={{ __html: blog.fullContent }} />
+        <div className="blog-content" dangerouslySetInnerHTML={{ __html: blog.content }} />
 
-        {/* ✅ Video Embed होगा */}
         {blog.video && (
           <div className="video-container">
             <h3>Watch Related Video</h3>
             <iframe
               width="100%"
               height="400"
-              src={blog.video}
+              src={getEmbedUrl(blog.video)} // ✅ Converted YouTube Embed URL
               title="Blog Video"
               frameBorder="0"
               allowFullScreen

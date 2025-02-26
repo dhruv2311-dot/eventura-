@@ -13,7 +13,7 @@ const Blogs = () => {
 
   useEffect(() => {
     axios
-      .get("https://eventura-4.onrender.com/blogs")
+      .get("https://eventura-4.onrender.com/blogs") // ✅ API URL
       .then((response) => {
         setBlogs(response.data);
         setLoading(false);
@@ -23,61 +23,58 @@ const Blogs = () => {
         setLoading(false);
       });
   }, []);
+
   return (
     <>
       <Navbar />
 
-      {/* ✅ Loader Display */}
       {loading && (
         <div className="blogs-loader-overlay">
           <img src={loaderGif} alt="Loading..." className="blogs-loader" />
         </div>
       )}
 
-      {/* ✅ Blur effect when loading */}
       <div className={`blogs-container ${loading ? "blogs-blur-background" : ""}`}>
-        {/* Our Blogs Section */}
         <section className="our-blogs">
           <h2>OUR BLOGS</h2>
-          <p>
-            When it comes to the growing event space, logistics, brand engagement, and unique storytelling matter. 
-            Stay updated with the latest insights, trends, and creative ideas in the event industry.
-          </p>
+          <p>Stay updated with the latest trends and insights in the event industry.</p>
           <div className="blog-images">
             <img src="https://bloggerspassion.com/wp-content/uploads/2020/06/event-blogging.webp" alt="Blog 1" />
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBtAckMwy5uTqdAGiIWlFGCyMXvosNs-dYiw&s" alt="Blog 2" />
           </div>
         </section>
 
-        {/* Trending, Watch with Us */}
+        {/* ✅ Trending Section - 6 Blogs */}
         <section className="trending">
           <h2>TRENDING, WATCH WITH US</h2>
           <div className="trending-grid">
             {blogs.slice(0, 6).map((blog) => (
               <div className="trending-card" key={blog._id}>
-                {/* ✅ सिर्फ एक Image Show होगी */}
-                <img src={blog.listImage} alt={blog.title} />
+                <img src={blog.image} alt={blog.title} />
                 <div className="trending-content">
                   <h3>{blog.title}</h3>
                   <p>{blog.author} • {new Date(blog.date).toDateString()}</p>
-                  <p>{blog.shortContent.substring(0, 100)}...</p>
+                  {/* ✅ Short Description Using `content` */}
+                  <p>{blog.content.replace(/(<([^>]+)>)/gi, "").substring(0, 150)}...</p>
                   <button onClick={() => navigate(`/blog/${blog._id}`)}>Know More</button>
                 </div>
               </div>
             ))}
           </div>
         </section>
-        {/* Latest Blogs */}
+
+        {/* ✅ Latest Blogs Section - 4 Blogs */}
         <section className="latest-blogs">
           <h2>THE LATEST BLOGS</h2>
           <div className="latest-grid">
             {blogs.slice(6, 10).map((blog) => (
               <div className="latest-card" key={blog._id}>
-                <img src={blog.listImage} alt={blog.title} />
+                <img src={blog.image} alt={blog.title} />
                 <div className="latest-content">
                   <h3>{blog.title}</h3>
                   <p>{blog.author} • {new Date(blog.date).toDateString()}</p>
-                  <p>{blog.shortContent.substring(0, 100)}...</p>
+                  {/* ✅ Short Description Using `content` */}
+                  <p>{blog.content.replace(/(<([^>]+)>)/gi, "").substring(0, 150)}...</p>
                   <button onClick={() => navigate(`/blog/${blog._id}`)}>Know More</button>
                 </div>
               </div>
@@ -93,101 +90,4 @@ const Blogs = () => {
 
 export default Blogs;
 
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import "./Blogs.css";
-// import Footer from "./footer";
-// import Navbar from "./Navbar";
-// import loaderGif from "./assets/loader.gif"; // ✅ Import loader GIF
-
-// const Blogs = () => {
-//   const [publishedBlogs, setPublishedBlogs] = useState([]);
-//   const [upcomingBlogs, setUpcomingBlogs] = useState([]);
-//   const [loading, setLoading] = useState(true); // ✅ Loader state
-
-//   useEffect(() => {
-//     axios
-//       .get("https://eventura-4.onrender.com/blogs")
-//       .then((response) => {
-//         const published = response.data.filter((blog) => blog.status === "published");
-//         const upcoming = response.data.filter((blog) => blog.status === "upcoming");
-//         setPublishedBlogs(published);
-//         setUpcomingBlogs(upcoming);
-//         setLoading(false); // ✅ Data load hone ke baad loader hatao
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching blogs:", error);
-//         setLoading(false);
-//       });
-//   }, []);
-
-//   return (
-//     <>
-//       <Navbar />
-
-//       {/* ✅ Loader Display */}
-//       {loading && (
-//         <div className="blogs-loader-overlay">
-//           <img src={loaderGif} alt="Loading..." className="blogs-loader" />
-//         </div>
-//       )}
-
-//       {/* ✅ Blur effect when loading */}
-//       <div className={`blogs-container ${loading ? "blogs-blur-background" : ""}`}>
-//         {/* Our Blogs Section */}
-//         <section className="our-blogs">
-//           <h2>OUR BLOGS</h2>
-//           <p>
-//             When it comes to the growing event space, logistics, brand engagement, and unique storytelling matter. 
-//             Stay updated with the latest insights, trends, and creative ideas in the event industry.
-//           </p>
-//           <div className="blog-images">
-//             <img src="https://bloggerspassion.com/wp-content/uploads/2020/06/event-blogging.webp" alt="Blog 1" />
-//             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBtAckMwy5uTqdAGiIWlFGCyMXvosNs-dYiw&s" alt="Blog 2" />
-//           </div>
-//         </section>
-
-//         {/* Trending, Watch with Us */}
-//         <section className="trending">
-//           <h2>TRENDING, WATCH WITH US</h2>
-//           <div className="trending-grid">
-//             {publishedBlogs.map((blog, index) => (
-//               <div className="trending-card" key={index}>
-//                 <img src={blog.image} alt={blog.title} />
-//                 <div className="trending-content">
-//                   <h3>{blog.title}</h3>
-//                   <p>{blog.author} • {new Date(blog.date).toDateString()}</p>
-//                   <p>{blog.content.substring(0, 100)}...</p>
-//                   <button>Know More</button>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </section>
-
-//         {/* Latest Blogs */}
-//         <section className="latest-blogs">
-//           <h2>THE LATEST BLOGS</h2>
-//           <div className="latest-grid">
-//             {upcomingBlogs.map((blog, index) => (
-//               <div className="latest-card" key={index}>
-//                 <img src={blog.image} alt={blog.title} />
-//                 <div className="latest-content">
-//                   <h3>{blog.title}</h3>
-//                   <p>{blog.author} • {new Date(blog.date).toDateString()}</p>
-//                   <p>{blog.content.substring(0, 100)}...</p>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//           <button className="view-all">VIEW ALL</button>
-//         </section>
-//       </div>
-
-//       <Footer />
-//     </>
-//   );
-// };
-
-// export default Blogs;
 

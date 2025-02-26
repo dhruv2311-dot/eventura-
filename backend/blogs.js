@@ -66,7 +66,9 @@ app.get('/blogs/:id', async (req, res) => {
         if (!blog) {
             return res.status(404).json({ message: "Blog not found" });
         }
-
+        if (blog.video && blog.video.includes("watch?v=")) {
+            blog.video = blog.video.replace("watch?v=", "embed/");
+          }
         res.status(200).json(blog);
 
     } catch (error) {
