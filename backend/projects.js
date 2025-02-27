@@ -1,18 +1,19 @@
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const cors = require('cors');
+
 const app = express();
 const port = 5173;
+
 app.use(cors());
+app.use(express.json());
+
 // MongoDB connection details
 const uri = "mongodb+srv://dhruvsonagra23:dhruv1723@event23.6qktv.mongodb.net/";
 const dbName = "eventura";
 
 let db;
 let projects;
-
-// Middleware to parse JSON
-app.use(express.json());
 
 // Connect to MongoDB and Initialize Collections
 async function initializeDatabase() {
@@ -22,7 +23,7 @@ async function initializeDatabase() {
 
         db = client.db(dbName);
         projects = db.collection('projects');
-        
+
         app.listen(port, () => {
             console.log(`Server running at http://localhost:${port}`);
         });
@@ -32,10 +33,12 @@ async function initializeDatabase() {
     }
 }
 initializeDatabase();
+
+// Get all projects
 app.get('/projects', async (req, res) => {
     try {
-        const projects = await db.collection('projects').find().toArray();
-        res.status(200).json(projects);
+        const projectList = await projects.find().toArray();
+        res.status(200).json(projectList);
     } catch (err) {
         res.status(500).json({ error: 'Failed to fetch projects' });
     }
@@ -45,7 +48,21 @@ app.get('/projects', async (req, res) => {
 app.get('/projects/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const project = await db.collection('projects').findOne({ _id: new ObjectId(id) });
+        const project = await projects.findOne({ _id: new ObjectId(id) });
+
+        if (!project) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        res.status(200).json(project);
+    } catch (err) {
+        res.status(400).json({ error: 'Invalid ID format' });
+    }
+});
+app.get('/projects/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const project = await projects.findOne({ _id: new ObjectId(id) });
 
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
@@ -61,7 +78,7 @@ app.get('/projects/:id', async (req, res) => {
 app.post('/projects', async (req, res) => {
     try {
         const newProject = req.body;
-        const result = await db.collection('projects').insertOne(newProject);
+        const result = await projects.insertOne(newProject);
         res.status(201).json({ message: 'Project created', projectId: result.insertedId });
     } catch (err) {
         res.status(500).json({ error: 'Failed to create project' });
@@ -74,7 +91,7 @@ app.put('/projects/:id', async (req, res) => {
         const id = req.params.id;
         const updatedProject = req.body;
 
-        const result = await db.collection('projects').replaceOne({ _id: new ObjectId(id) }, updatedProject);
+        const result = await projects.replaceOne({ _id: new ObjectId(id) }, updatedProject);
 
         if (result.matchedCount === 0) {
             return res.status(404).json({ error: 'Project not found' });
@@ -92,7 +109,7 @@ app.patch('/projects/:id', async (req, res) => {
         const id = req.params.id;
         const updateFields = req.body;
 
-        const result = await db.collection('projects').updateOne({ _id: new ObjectId(id) }, { $set: updateFields });
+        const result = await projects.updateOne({ _id: new ObjectId(id) }, { $set: updateFields });
 
         if (result.matchedCount === 0) {
             return res.status(404).json({ error: 'Project not found' });
@@ -108,7 +125,7 @@ app.patch('/projects/:id', async (req, res) => {
 app.delete('/projects/:id', async (req, res) => {
     try {
         const id = req.params.id;
-        const result = await db.collection('projects').deleteOne({ _id: new ObjectId(id) });
+        const result = await projects.deleteOne({ _id: new ObjectId(id) });
 
         if (result.deletedCount === 0) {
             return res.status(404).json({ error: 'Project not found' });
