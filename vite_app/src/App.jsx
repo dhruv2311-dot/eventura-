@@ -10,10 +10,11 @@ import Venue from "./venue";
 import VenueDetails from "./VenueDetails"; 
 import CategoryDetails from "./CategoryDetails"; 
 import Blogs from "./Blogs";
-import BlogDetails from "./BlogDetails";  // ✅ Import BlogDetails Component
+import BlogDetails from "./BlogDetails";
 import Events from "./events";
 import Contactus from "./Contactus";
 import Projects from "./projects";
+import ProjectDetails from "./ProjectDetails";  // ✅ Imported ProjectDetails Component
 import Profile from "./profilepage";
 import Landingpage from "./landingpage";
 import ProtectedRoute from "./ProtecedRoute";
@@ -30,7 +31,7 @@ function App() {
       <Router>
         {isAuthenticated && <Authuser />}
         <Routes>
-          {/* ✅ Agar user login hai toh / pe Landingpage load na ho */}
+          {/* ✅ If user is logged in, redirect "/" to "/home" */}
           <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Landingpage />} />
 
           {/* ✅ Home Page - Protected */}
@@ -46,15 +47,16 @@ function App() {
           {/* ✅ Other Routes */}
           <Route path="/events" element={<ProtectedRoute><Events /></ProtectedRoute>} />
           <Route path="/projects" element={<ProtectedRoute><Projects /></ProtectedRoute>} />
+          <Route path="/projects/:id" element={<ProtectedRoute><ProjectDetails /></ProtectedRoute>} /> {/* ✅ Added Route for Project Details */}
           <Route path="/blogs" element={<ProtectedRoute><Blogs /></ProtectedRoute>} />
-          <Route path="/blog/:id" element={<ProtectedRoute><BlogDetails /></ProtectedRoute>} /> {/* ✅ Blog Details Route Added */}
+          <Route path="/blog/:id" element={<ProtectedRoute><BlogDetails /></ProtectedRoute>} />
           <Route path="/contactus" element={<ProtectedRoute><Contactus /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/aboutus" element={<ProtectedRoute><AboutUs /></ProtectedRoute>} />
           <Route path="/discounts" element={<ProtectedRoute><Discount /></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
 
-          {/* ✅ 404 Page */}
+          {/* ✅ 404 Page - Redirect to Home */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
 
