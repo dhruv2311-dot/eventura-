@@ -9,10 +9,10 @@ import Homepage from "./homepage";
 import Venue from "./venue";
 import VenueDetails from "./VenueDetails"; 
 import CategoryDetails from "./CategoryDetails"; 
-import Blogs from "./Blogs";
+import Blogs from "./blogs";
 import BlogDetails from "./BlogDetails";
 import Events from "./events";
-import Contactus from "./Contactus";
+import Contactus from "./contactus";
 import Projects from "./projects";
 import ProjectDetails from "./ProjectDetails";  // ✅ Imported ProjectDetails Component
 import Profile from "./profilepage";
