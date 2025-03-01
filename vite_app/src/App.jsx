@@ -14,7 +14,7 @@ import BlogDetails from "./BlogDetails";
 import Events from "./events";
 import Contactus from "./contactus";
 import Projects from "./projects";
-import ProjectDetails from "./ProjectDetails";  // ✅ Imported ProjectDetails Component
+import ProjectDetails from "./ProjectDetails"; 
 import Profile from "./profilepage";
 import Landingpage from "./landingpage";
 import ProtectedRoute from "./ProtecedRoute";
