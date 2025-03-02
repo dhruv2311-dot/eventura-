@@ -58,7 +58,7 @@ const ProfilePage = () => {
           </button>
           <ul className="sidebar-menu">
             <li><FaUser /> Personal Details</li>
-            <li><FaCalendarAlt /> My Bookings</li>
+            <li><FaCalendarAlt onClick={()=>navigate(`/booking`)} /> My Bookings</li>
             <li><FaHeart /> Saved Venues</li>
             <li><FaCreditCard /> Payment Details</li>
             <li><FaCog /> Settings</li>

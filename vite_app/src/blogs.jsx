@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Blogs.css";
 import Footer from "./footer";
-import Navbar from "./Navbar";
+import Navbar from "./navbar";
 import loaderGif from "./assets/loader.gif";
 
 const Blogs = () => {

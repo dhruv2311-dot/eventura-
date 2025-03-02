@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
 import { useData } from "./DataFetcher"; // Importing data
 import Navbar from "./navbar";
 import Footer from "./footer";
@@ -12,34 +13,65 @@ const Homepage = () => {
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [searchType, setSearchType] = useState(null); // "category" or "location"
+  const navigate = useNavigate();
 
   if (loading) return <h2 className="loading">Loading...</h2>;
   if (error) return <h2 className="error">Error fetching data</h2>;
-  const handleBookNow = async (item, type) => {
-    const bookingData = {
-      itemId: item._id,
-      name: item.name,
-      type,
-      status: "Pending",
-    };
+
+  const handleBookNow = async (itemId, type) => {
     try {
-      const response = await fetch("https://eventura-2.onrender.com/api/bookings", {
+      // Determine the API URL based on the type
+      const apiUrl = type === 'category'
+        ? `https://eventura-2.onrender.com/categories/${itemId}`
+        : `https://eventura-2.onrender.com/venues/${itemId}`;
+
+      // Fetch the full item details
+      const response = await fetch(apiUrl);
+      const item = await response.json();
+
+      if (!response.ok || !item) {
+        toast.error(`Failed to fetch ${type} details.`);
+        return;
+      }
+
+      const bookingData = {
+        userId: null, // Add userId if available
+        eventId: type === "category" ? item._id : null,
+        eventName: type === "category" ? item.name : null,
+        venueId: type === "venue" ? item._id : null,
+        venueName: type === "venue" ? item.name : null,
+        date: null, // Add date if available
+        status: "Pending", // Default status
+      };
+
+      // Save the booking in the database
+      const saveResponse = await fetch("https://eventura-10.onrender.com/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingData),
       });
-      if (response.ok) {
-        toast.success("Booking request sent successfully!");
+
+      const saveData = await saveResponse.json();
+
+      if (saveResponse.ok) {
+        toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} booking request sent successfully!`);
+
+        // Store the booking in local storage for quick UI updates
+        let existingBookings = JSON.parse(localStorage.getItem("myBookings")) || [];
+        existingBookings.push(bookingData);
+        localStorage.setItem("myBookings", JSON.stringify(existingBookings));
+
+        // Navigate to the booking page
+        navigate(`/booking`);
       } else {
+        console.error("Booking failed:", saveData);
         toast.error("Failed to send booking request.");
       }
     } catch (error) {
+      console.error("Error during booking:", error);
       toast.error("Error while booking.");
     }
   };
-  const handleBooking = (id, name) => {
-    alert(`Booking initiated for ${name} (ID: ${id})`);
-  }
 
   // 🔍 Handle Live Search
   const handleLiveSearch = (type, value) => {
@@ -93,128 +125,120 @@ const Homepage = () => {
 
       <div className="eventura-container">
         {/* 🎯 Show Structured Category Suggestions */}
-        {/* 🎯 Show Structured Category Suggestions */}
-{searchType === "category" && searchCategory && (
-  <>
-    <h2 className="category">Search Results - Categories</h2>
-    <div className="search-results-grid">
-      {filteredCategories.length > 0 ? (
-        filteredCategories.map((category) => (
-          <div key={category._id} className="search-card">
-            <Link to={`/category/${category._id}`}>
-              <img
-                src={category.featured_images?.[0] || category.image_url}
-                alt={category.name}
-                className="search-image"
-              />
-              <div className="search-info">
-                <h3>{category.name}</h3>
-                <p>{category.description.substring(0, 80)}...</p>
-              </div>
-            </Link>
-            <button
-              className="book-now-btn"
-              onClick={() => handleBooking(category._id, category.name)}
-            >
-              Book Now
-            </button>
-          </div>
-        ))
-      ) : (
-        <p className="no-results">No categories found.</p>
-      )}
-    </div>
-  </>
-)}
-
-
-{searchType === "location" && searchLocation && (
-  <>
-    <h2 className="venues">Search Results - Venues</h2>
-    <div className="search-results-grid">
-      {filteredVenues.length > 0 ? (
-        filteredVenues.map((venue) => (
-          <div key={venue._id} className="search-card">
-            <Link to={`/venue/${venue._id}`}>
-              <img
-                src={venue.images?.[0]}
-                alt={venue.name}
-                className="search-image"
-              />
-              <div className="search-info">
-                <h3>{venue.name}</h3>
-                <p><strong>Location:</strong> {venue.location}</p>
-                <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
-              </div>
-            </Link>
-            <button
-              className="book-now-btn"
-              onClick={() => handleBooking(venue._id, venue.name)}
-            >
-              Book Now
-            </button>
-          </div>
-        ))
-      ) : (
-        <p className="no-results">No venues found.</p>
-      )}
-    </div>
-  </>
-)}
-
-{/* 🎉 Normal Category & Venue Sections */}
-{searchType === null && (
-  <>
-    <h2 className="category">Browse By Category</h2>
-    <div className="categories-container">
-      {categories.map((category) => (
-        <div key={category._id} className="category-card">
-          <Link to={`/category/${category._id}`}>
-            <img
-              src={category.featured_images?.[0] || category.image_url}
-              alt={category.name}
-            />
-            <h2>{category.name}</h2>
-            <p>{category.description.substring(0, 60)}...</p>
-          </Link>
-          <button
-            className="book-now-btn"
-            onClick={() => handleBooking(category._id, category.name)}
-          >
-            Book Now
-          </button>
-        </div>
-      ))}
-    </div>
-
-    <h2 className="venues">Popular Venues</h2>
-    <div className="venues-container">
-      {venues.map((venue) => (
-        <div key={venue._id} className="venue-card">
-          <Link to={`/venue/${venue._id}`}>
-            <img
-              src={venue.images?.[0]}
-              alt={venue.name}
-              className="venue-image"
-            />
-            <div className="venue-details">
-              <h3>{venue.name}</h3>
-              <p><strong>Location:</strong> {venue.location}</p>
-              <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
+        {searchType === "category" && searchCategory && (
+          <>
+            <h2 className="category">Search Results - Categories</h2>
+            <div className="search-results-grid">
+              {filteredCategories.length > 0 ? (
+                filteredCategories.map((category) => (
+                  <div key={category._id} className="search-card">
+                    <Link to={`/category/${category._id}`}>
+                      <img
+                        src={category.featured_images?.[0] || category.image_url}
+                        alt={category.name}
+                        className="search-image"
+                      />
+                      <div className="search-info">
+                        <h3>{category.name}</h3>
+                        <p>{category.description.substring(0, 80)}...</p>
+                      </div>
+                    </Link>
+                    <button className="book-now-btn" onClick={() => handleBookNow(category._id, "category")}>
+                      Book Now
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="no-results">No categories found.</p>
+              )}
             </div>
-          </Link>
-          <button
-            className="book-now-btn"
-            onClick={() => handleBooking(venue._id, venue.name)}
-          >
-            Book Now
-          </button>
-        </div>
-      ))}
-    </div>
-  </>
-)}
-      
+          </>
+        )}
+
+        {searchType === "location" && searchLocation && (
+          <>
+            <h2 className="venues">Search Results - Venues</h2>
+            <div className="search-results-grid">
+              {filteredVenues.length > 0 ? (
+                filteredVenues.map((venue) => (
+                  <div key={venue._id} className="search-card">
+                    <Link to={`/venue/${venue._id}`}>
+                      <img
+                        src={venue.images?.[0]}
+                        alt={venue.name}
+                        className="search-image"
+                      />
+                      <div className="search-info">
+                        <h3>{venue.name}</h3>
+                        <p><strong>Location:</strong> {venue.location}</p>
+                        <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
+                      </div>
+                    </Link>
+                    <button className="book-now-btn" onClick={() => handleBookNow(venue._id, "venue")}>
+                      Book Now
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="no-results">No venues found.</p>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* 🎉 Normal Category & Venue Sections */}
+        {searchType === null && (
+          <>
+            <h2 className="category">Browse By Category</h2>
+            <div className="categories-container">
+              {categories.map((category) => (
+                <div key={category._id} className="category-card">
+                  <Link to={`/category/${category._id}`}>
+                    <img
+                      src={category.featured_images?.[0] || category.image_url}
+                      alt={category.name}
+                    />
+                    <h2>{category.name}</h2>
+                    <p>{category.description.substring(0, 60)}...</p>
+                  </Link>
+                  <button
+                    className="book-now-btn"
+                    onClick={() => handleBookNow(category._id, "category")}
+                  >
+                    Book Now
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <h2 className="venues">Popular Venues</h2>
+            <div className="venues-container">
+              {venues.map((venue) => (
+                <div key={venue._id} className="venue-card">
+                  <Link to={`/venue/${venue._id}`}>
+                    <img
+                      src={venue.images?.[0]}
+                      alt={venue.name}
+                      className="venue-image"
+                    />
+                    <div className="venue-details">
+                      <h3>{venue.name}</h3>
+                      <p><strong>Location:</strong> {venue.location}</p>
+                      <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
+                    </div>
+                  </Link>
+                  <button
+                    className="book-now-btn"
+                    onClick={() => handleBookNow(venue._id, "venue")}
+                  >
+                    Book Now
+                  </button>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+
         <div className="start-event-wrapper">
           <div className="start-event-container">
             <img
@@ -267,4 +291,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-
