@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useData } from "./DataFetcher"; // Importing data
+import { useAuth0 } from "@auth0/auth0-react"; // Add Auth0
 import Navbar from "./navbar";
 import Footer from "./footer";
 import "./homepage.css";
+import { toast } from "react-toastify";
 
 const Homepage = () => {
   const { categories, venues, team, reviews, loading, error } = useData();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth0(); // Auth0 hook
   const [searchCategory, setSearchCategory] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
@@ -15,78 +17,75 @@ const Homepage = () => {
   const [searchType, setSearchType] = useState(null); // "category" or "location"
   const navigate = useNavigate();
 
-  if (loading) return <h2 className="loading">Loading...</h2>;
+  // Handle loading states
+  if (authLoading || loading) return <h2 className="loading">Loading...</h2>;
   if (error) return <h2 className="error">Error fetching data</h2>;
 
   const handleBookNow = async (itemId, type) => {
     try {
-      // Determine the API URL based on the type
-      const apiUrl = type === 'category'
-        ? `https://eventura-2.onrender.com/categories/${itemId}`
-        : `https://eventura-2.onrender.com/venues/${itemId}`;
+      // Ensure user is authenticated
+      if (!isAuthenticated || !user?.sub) {
+        toast.error("Please log in to book.");
+        navigate("/login"); // Adjust this route as needed
+        return;
+      }
 
-      // Fetch the full item details
+      const apiUrl =
+        type === "category"
+          ? `https://eventura-2.onrender.com/categories/${itemId}`
+          : `https://eventura-2.onrender.com/venues/${itemId}`;
+
       const response = await fetch(apiUrl);
       const item = await response.json();
-
       if (!response.ok || !item) {
         toast.error(`Failed to fetch ${type} details.`);
         return;
       }
 
       const bookingData = {
-        userId: null, // Add userId if available
-        eventId: type === "category" ? item._id : null,
-        eventName: type === "category" ? item.name : null,
-        venueId: type === "venue" ? item._id : null,
-        venueName: type === "venue" ? item.name : null,
-        date: null, // Add date if available
-        status: "Pending", // Default status
+        userId: user.sub, // Use Auth0 user ID
+        title: item.name, // Use category/venue name as title
+        image: type === "category" ? item.featured_images?.[0] || item.image_url : item.images?.[0],
+        description: item.description || "No description available",
+        price: item.price_per_day || 50, // Default price if not available
+        type: type === "category" ? "event" : "venue", // Adjust based on your backend
+        eventId: type === "category" ? item._id : null, // Optional
+        venueId: type === "venue" ? item._id : null, // Optional
+        status: "Pending",
       };
 
-      // Save the booking in the database
-      const saveResponse = await fetch("https://eventura-10.onrender.com/bookings", {
+      const saveResponse = await fetch("http://localhost:5000/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(bookingData),
       });
 
-      const saveData = await saveResponse.json();
-
       if (saveResponse.ok) {
-        toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} booking request sent successfully!`);
-
-        // Store the booking in local storage for quick UI updates
-        let existingBookings = JSON.parse(localStorage.getItem("myBookings")) || [];
-        existingBookings.push(bookingData);
-        localStorage.setItem("myBookings", JSON.stringify(existingBookings));
-
-        // Navigate to the booking page
-        navigate(`/booking`);
+        toast.success("Booking request sent successfully!");
+        navigate("/booking");
       } else {
-        console.error("Booking failed:", saveData);
-        toast.error("Failed to send booking request.");
+        const errorData = await saveResponse.json();
+        toast.error(`Failed to send booking request: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
-      console.error("Error during booking:", error);
+      console.error("Booking error:", error);
       toast.error("Error while booking.");
     }
   };
 
-  // 🔍 Handle Live Search
   const handleLiveSearch = (type, value) => {
     if (type === "category") {
       setSearchCategory(value);
-      setSearchLocation(""); // Reset location search
+      setSearchLocation("");
       setFilteredCategories(
         categories.filter((category) =>
           category.name.toLowerCase().includes(value.toLowerCase())
         )
       );
       setSearchType(value ? "category" : null);
-    } else if (type === "location") {
+    } else {
       setSearchLocation(value);
-      setSearchCategory(""); // Reset category search
+      setSearchCategory("");
       setFilteredVenues(
         venues.filter((venue) =>
           venue.location.toLowerCase().includes(value.toLowerCase())
@@ -132,7 +131,7 @@ const Homepage = () => {
               {filteredCategories.length > 0 ? (
                 filteredCategories.map((category) => (
                   <div key={category._id} className="search-card">
-                    <Link to={`/category/${category._id}`}>
+                    <Link to={`/category/${category._id}`} className="search-card-link">
                       <img
                         src={category.featured_images?.[0] || category.image_url}
                         alt={category.name}
@@ -143,7 +142,10 @@ const Homepage = () => {
                         <p>{category.description.substring(0, 80)}...</p>
                       </div>
                     </Link>
-                    <button className="book-now-btn" onClick={() => handleBookNow(category._id, "category")}>
+                    <button
+                      className="book-now-btn"
+                      onClick={() => handleBookNow(category._id, "category")}
+                    >
                       Book Now
                     </button>
                   </div>
@@ -162,7 +164,7 @@ const Homepage = () => {
               {filteredVenues.length > 0 ? (
                 filteredVenues.map((venue) => (
                   <div key={venue._id} className="search-card">
-                    <Link to={`/venue/${venue._id}`}>
+                    <Link to={`/venue/${venue._id}`} className="search-card-link">
                       <img
                         src={venue.images?.[0]}
                         alt={venue.name}
@@ -174,7 +176,10 @@ const Homepage = () => {
                         <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
                       </div>
                     </Link>
-                    <button className="book-now-btn" onClick={() => handleBookNow(venue._id, "venue")}>
+                    <button
+                      className="book-now-btn"
+                      onClick={() => handleBookNow(venue._id, "venue")}
+                    >
                       Book Now
                     </button>
                   </div>
@@ -193,7 +198,7 @@ const Homepage = () => {
             <div className="categories-container">
               {categories.map((category) => (
                 <div key={category._id} className="category-card">
-                  <Link to={`/category/${category._id}`}>
+                  <Link to={`/category/${category._id}`} className="category-card-link">
                     <img
                       src={category.featured_images?.[0] || category.image_url}
                       alt={category.name}
@@ -215,7 +220,7 @@ const Homepage = () => {
             <div className="venues-container">
               {venues.map((venue) => (
                 <div key={venue._id} className="venue-card">
-                  <Link to={`/venue/${venue._id}`}>
+                  <Link to={`/venue/${venue._id}`} className="venue-card-link">
                     <img
                       src={venue.images?.[0]}
                       alt={venue.name}
@@ -248,7 +253,9 @@ const Homepage = () => {
             />
             <div className="start-event-content">
               <h2>Let’s Begin Crafting Your Event!</h2>
-              <p>Let's kickstart your event journey today, turning your dreams into remarkable moments.</p>
+              <p>
+                Let's kickstart your event journey today, turning your dreams into remarkable moments.
+              </p>
             </div>
           </div>
         </div>
@@ -279,7 +286,9 @@ const Homepage = () => {
                 <h3>{review.name}</h3>
                 <p>{review.comment}</p>
                 <span>Rating: {review.rating} ⭐</span>
-                <small>{review.event_type} - {new Date(review.review_date).toDateString()}</small>
+                <small>
+                  {review.event_type} - {new Date(review.review_date).toDateString()}
+                </small>
               </div>
             </div>
           ))}

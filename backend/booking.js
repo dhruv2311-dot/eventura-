@@ -5,7 +5,7 @@ const cors = require('cors');
 const app = express();
 const port = 5000;
 app.use(cors());
-app.use(express.json()); // Middleware to parse JSON
+app.use(express.json());
 
 // MongoDB connection details
 const uri = 'mongodb+srv://dhruvsonagra23:dhruv1723@event23.6qktv.mongodb.net/';
@@ -14,7 +14,7 @@ const dbName = 'eventura';
 let db;
 let bookingsCollection;
 
-// Connect to MongoDB and Initialize Collections
+// 🟢 Connect to MongoDB
 async function initializeDatabase() {
     try {
         const client = new MongoClient(uri);
@@ -24,11 +24,9 @@ async function initializeDatabase() {
         db = client.db(dbName);
         bookingsCollection = db.collection('bookings');
 
-        // Start the server only after MongoDB connection is established
         app.listen(port, () => {
             console.log(`🚀 Server running at http://localhost:${port}`);
         });
-
     } catch (error) {
         console.error('🔴 Error connecting to MongoDB:', error);
         process.exit(1);
@@ -36,140 +34,86 @@ async function initializeDatabase() {
 }
 initializeDatabase();
 
-// ✅ POST API to Create a Booking (Initially Pending)
+// ✅ POST API to Create a Booking
 app.post('/bookings', async (req, res) => {
     try {
         if (!db || !bookingsCollection) {
             return res.status(500).json({ message: 'Database not initialized' });
         }
 
-        const { userId, eventId, eventName, venueId, venueName, date } = req.body;
+        const { userId, title, image, description, price, type, count = 1 } = req.body;
 
-        // Insert booking into MongoDB with default "Pending" status
+        if (!userId || !title || !price || !type) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+
         const newBooking = {
+            _id: new ObjectId(),
             userId,
-            eventId: eventId || null, // Event can be null initially
-            eventName: eventName || null,
-            venueId: venueId || null, // Venue can be null initially
-            venueName: venueName || null,
-            date,
-            status: 'Pending', // Default status
+            title,
+            image: image || null,
+            description: description || null,
+            price: Number(price),
+            type,
+            count: Number(count), // Default to 1 if not provided
+            status: 'Pending',
+            createdAt: new Date(),
         };
 
         const result = await bookingsCollection.insertOne(newBooking);
-        res.status(201).json({ message: 'Booking successful', bookingId: result.insertedId });
 
+        res.status(201).json({ message: 'Booking added successfully', booking: newBooking });
     } catch (error) {
         console.error('🔴 Error creating booking:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 });
 
-// ✅ GET API to Fetch User's Bookings
-app.get('/bookings/:userId', async (req, res) => {
+// ✅ GET API: Fetch User's Bookings
+app.get("/bookings/:userId", async (req, res) => {
     try {
-        if (!db || !bookingsCollection) {
-            return res.status(500).json({ message: 'Database not initialized' });
-        }
+        const userId = decodeURIComponent(req.params.userId);
+        console.log("✅ Backend Received User ID:", userId);
 
-        const { userId } = req.params;
         const bookings = await bookingsCollection.find({ userId }).toArray();
 
-        res.status(200).json(bookings);
-
+        res.status(200).json({
+            bookings: bookings || [],
+            totalItems: bookings.length || 0,
+            totalPrice: bookings.reduce((sum, b) => sum + (b.price * (b.count || 1)), 0) || 0,
+        });
     } catch (error) {
-        console.error('🔴 Error fetching bookings:', error);
-        res.status(500).json({ message: 'Server error', error });
+        console.error("❌ Backend Error:", error);
+        res.status(500).json({ message: "Server error", error });
     }
 });
 
-// ✅ PUT API to Add/Update Event or Venue
-app.put('/bookings/:bookingId', async (req, res) => {
+// ✅ PUT API: Update Booking Status
+app.put('/bookings/:userId/:bookingId', async (req, res) => {
     try {
-        if (!db || !bookingsCollection) {
-            return res.status(500).json({ message: 'Database not initialized' });
+        const { userId, bookingId } = req.params;
+        const { status } = req.body;
+
+        if (!['Pending', 'Confirmed', 'Cancelled'].includes(status)) {
+            return res.status(400).json({ message: 'Invalid status value' });
         }
 
-        const { bookingId } = req.params;
-        const { eventId, eventName, venueId, venueName } = req.body;
-
-        const updateData = {};
-        if (eventId) updateData.eventId = eventId;
-        if (eventName) updateData.eventName = eventName;
-        if (venueId) updateData.venueId = venueId;
-        if (venueName) updateData.venueName = venueName;
+        if (!ObjectId.isValid(bookingId)) {
+            return res.status(400).json({ message: 'Invalid booking ID' });
+        }
 
         const result = await bookingsCollection.updateOne(
-            { _id: new ObjectId(bookingId) },
-            { $set: updateData }
+            { userId, _id: new ObjectId(bookingId) },
+            { $set: { status } }
         );
 
         if (result.matchedCount === 0) {
             return res.status(404).json({ message: 'Booking not found' });
         }
 
-        res.status(200).json({ message: 'Booking updated successfully' });
-
+        res.status(200).json({ message: `Booking ${status.toLowerCase()} successfully` });
     } catch (error) {
-        console.error('🔴 Error updating booking:', error);
-        res.status(500).json({ message: 'Server error', error });
-    }
-});
-
-// ✅ PUT API to Confirm Booking (Only if Event & Venue are Set)
-app.put('/bookings/confirm/:bookingId', async (req, res) => {
-    try {
-        if (!db || !bookingsCollection) {
-            return res.status(500).json({ message: 'Database not initialized' });
-        }
-
-        const { bookingId } = req.params;
-        const booking = await bookingsCollection.findOne({ _id: new ObjectId(bookingId) });
-
-        if (!booking) {
-            return res.status(404).json({ message: 'Booking not found' });
-        }
-
-        if (!booking.eventId || !booking.venueId) {
-            return res.status(400).json({ message: 'Event & Venue required before confirmation' });
-        }
-
-        await bookingsCollection.updateOne(
-            { _id: new ObjectId(bookingId) },
-            { $set: { status: 'Confirmed' } }
-        );
-
-        res.status(200).json({ message: 'Booking confirmed successfully' });
-
-    } catch (error) {
-        console.error('🔴 Error confirming booking:', error);
-        res.status(500).json({ message: 'Server error', error });
-    }
-});
-
-// ✅ DELETE API to Cancel Booking
-app.delete('/bookings/:bookingId', async (req, res) => {
-    try {
-        if (!db || !bookingsCollection) {
-            console.error('🔴 Database not initialized');
-            return res.status(500).json({ message: 'Database not initialized' });
-        }
-
-        const { bookingId } = req.params;
-        console.log(`Attempting to delete booking with ID: ${bookingId}`);
-
-        const result = await bookingsCollection.deleteOne({ _id: new ObjectId(bookingId) });
-
-        if (result.deletedCount === 0) {
-            console.warn(`🔴 Booking with ID ${bookingId} not found`);
-            return res.status(404).json({ message: 'Booking not found' });
-        }
-
-        console.log(`🟢 Booking with ID ${bookingId} cancelled successfully`);
-        res.status(200).json({ message: 'Booking cancelled successfully' });
-
-    } catch (error) {
-        console.error('🔴 Error cancelling booking:', error);
+        console.error('🔴 Error updating booking status:', error);
         res.status(500).json({ message: 'Server error', error });
     }
 });

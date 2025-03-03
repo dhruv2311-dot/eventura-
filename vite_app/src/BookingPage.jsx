@@ -1,240 +1,134 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "./BookingPage.css";
-
+import { useAuth0 } from "@auth0/auth0-react";
+import './BookingPage.css';
+import Navbar from './navbar';
+import Footer from './footer';
 const BookingPage = () => {
-  const navigate = useNavigate();
-  const [bookingItems, setBookingItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [totalPrice, setTotalPrice] = useState(0);
+  const { user, isAuthenticated, isLoading } = useAuth0();
+  const [bookings, setBookings] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // Get all bookings from localStorage
-    const fetchBookingDetails = () => {
-      try {
-        const existingBookings = JSON.parse(localStorage.getItem("myBookings")) || [];
-        if (existingBookings.length === 0) {
-          setError("No bookings found!");
-          setLoading(false);
-          return;
-        }
-        
-        // Get all pending bookings
-        const pendingBookings = existingBookings.filter(booking => booking.status === "Pending");
-        setBookingItems(pendingBookings);
-        
-        // Calculate total price
-        const total = pendingBookings.reduce((sum, item) => {
-          const price = item.price === "N/A" ? 0 : parseFloat(item.price);
-          return sum + price;
-        }, 0);
-        
-        setTotalPrice(total);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching booking details:", error);
-        setError("Failed to load booking details");
-        setLoading(false);
-      }
-    };
-
-    fetchBookingDetails();
-  }, []);
-
-  const handleConfirmAllBookings = async () => {
-    try {
-      if (bookingItems.length === 0) {
-        toast.error("No bookings to confirm");
-        return;
-      }
-
-      // Update each booking status in the database
-      const updatePromises = bookingItems.map(item => 
-        fetch(`https://eventura-10.onrender.com/bookings/confirm/${item.itemId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-        })
-      );
-      
-      const results = await Promise.allSettled(updatePromises);
-      const allSuccessful = results.every(result => result.status === "fulfilled" && result.value.ok);
-      
-      if (allSuccessful) {
-        // Update the bookings in localStorage
-        const existingBookings = JSON.parse(localStorage.getItem("myBookings")) || [];
-        const updatedBookings = existingBookings.map(booking => 
-          bookingItems.some(item => item.itemId === booking.itemId)
-            ? { ...booking, status: "Confirmed" } 
-            : booking
-        );
-        
-        localStorage.setItem("myBookings", JSON.stringify(updatedBookings));
-        
-        toast.success("All bookings confirmed successfully!");
-        
-        // Update state to show confirmed status
-        setBookingItems(bookingItems.map(item => ({ ...item, status: "Confirmed" })));
-      } else {
-        toast.error("Failed to confirm some bookings");
-      }
-    } catch (error) {
-      console.error("Error confirming bookings:", error);
-      toast.error("Error confirming bookings");
+    if (isAuthenticated && user?.sub) {
+      fetchBookings(user.sub);
     }
-  };
-  
-  const handleRemoveItem = async (itemId) => {
+  }, [isAuthenticated, user]);
+
+  const fetchBookings = async (userId) => {
     try {
-      console.log(`Attempting to delete booking with itemId: ${itemId}`);
-      
-      const response = await fetch(`http://localhost:5000/bookings/${itemId}`, {
-        method: "DELETE",
+      console.log("Fetching bookings for user ID:", userId);
+      const response = await fetch(`http://localhost:5000/bookings/${encodeURIComponent(userId)}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
       });
 
-      console.log(`Response status: ${response.status}`);
-      
-      if (response.ok) {
-        console.log("Booking deleted successfully from MongoDB.");
-        
-        // Remove from state
-        const updatedItems = bookingItems.filter(item => item.itemId !== itemId);
-        setBookingItems(updatedItems);
-
-        // Remove from localStorage
-        const existingBookings = JSON.parse(localStorage.getItem("myBookings")) || [];
-        const updatedBookings = existingBookings.filter(booking => booking.itemId !== itemId);
-        localStorage.setItem("myBookings", JSON.stringify(updatedBookings));
-
-        // Recalculate total price
-        const total = updatedItems.reduce((sum, item) => {
-          const price = item.price === "N/A" ? 0 : parseFloat(item.price);
-          return sum + price;
-        }, 0);
-        setTotalPrice(total);
-
-        toast.success("Booking canceled successfully!");
-      } else {
-        console.error("Failed to cancel booking in MongoDB.");
-        toast.error("Failed to cancel booking in MongoDB.");
+      if (!response.ok) {
+        const errorText = await response.text();
+        if (response.status === 404) {
+          setBookings([]);
+          setError("");
+          return;
+        }
+        throw new Error(`Server responded with ${response.status}: ${errorText || "Failed to fetch bookings"}`);
       }
-    } catch (error) {
-      console.error("Error canceling booking:", error);
-      toast.error("Error canceling booking.");
+
+      const data = await response.json();
+      console.log("Bookings data:", data);
+
+      if (!data.bookings || !Array.isArray(data.bookings)) {
+        throw new Error("No valid bookings found in response");
+      }
+
+      setBookings(data.bookings);
+      setError("");
+    } catch (err) {
+      setError(err.message);
+      console.error("❌ Fetching bookings error:", err);
     }
   };
 
-  const handleCancelBooking = async () => {
+  const handleStatusUpdate = async (bookingId, newStatus) => {
     try {
-      const cancelPromises = bookingItems.map(item => handleRemoveItem(item.itemId));
-      await Promise.all(cancelPromises);
-      navigate(-1); // Go back to previous page
-    } catch (error) {
-      console.error("Error canceling all bookings:", error);
-      toast.error("Error canceling all bookings.");
+      const response = await fetch(`http://localhost:5000/bookings/${encodeURIComponent(user.sub)}/${bookingId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to update status: ${errorText}`);
+      }
+
+      // Refresh bookings after update
+      fetchBookings(user.sub);
+    } catch (err) {
+      setError(err.message);
+      console.error("❌ Status update error:", err);
     }
   };
 
-  if (loading) return <div className="booking-loading">Loading booking details...</div>;
-  if (error) return <div className="booking-error">{error}</div>;
-  if (bookingItems.length === 0) return <div className="booking-empty">Your booking cart is empty</div>;
+  // Calculate total money
+  const totalMoney = bookings.reduce((sum, booking) => sum + (booking.price * (booking.count || 1)), 0);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (!isAuthenticated) return <p>Please log in to view your bookings.</p>;
 
   return (
-    <div className="booking-page-container">
-      <div className="booking-card">
-        <div className="booking-header">
-          <h1>Booking Confirmation</h1>
-          <div className="booking-summary">
-            <span className="booking-count">{bookingItems.length} items</span>
-            <span className="booking-total">Total: ${totalPrice.toFixed(2)}</span>
-          </div>
-        </div>
-        
-        <div className="booking-items-container">
-          {bookingItems.map((item, index) => (
-            <div className="booking-item" key={index}>
-              <div className="booking-item-image-container">
-                <img 
-                  src={item.image || "https://via.placeholder.com/150x100?text=No+Image"} 
-                  alt={item.name} 
-                  className="booking-item-image" 
-                />
-                <span className="booking-item-type">{item.type}</span>
-              </div>
-              
-              <div className="booking-item-details">
-                <h3>{item.name}</h3>
-                <p className="booking-item-description">
-                  {item.description ? `${item.description.substring(0, 100)}...` : "No description available"}
-                </p>
-                
-                <div className="booking-item-info">
-                  {item.price && item.price !== "N/A" && (
-                    <span className="price-badge">${item.price}/day</span>
-                  )}
-                  
-                  {item.venueName && (
-                    <span className="venue-badge">Venue: {item.venueName}</span>
-                  )}
-                  
-                  {item.eventName && (
-                    <span className="event-badge">Event: {item.eventName}</span>
-                  )}
-                </div>
-              </div>
-              
-              <div className="booking-item-actions">
-                <button 
-                  className="remove-item-btn" 
-                  onClick={() => handleRemoveItem(item.itemId)}
-                >
-                  ✖
-                </button>
-              </div>
+    <>
+      <Navbar />
+      <div className="booking-page">
+        <h2>My Bookings</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        {bookings.length > 0 ? (
+          <>
+            <ul className="booking-list">
+              {bookings.map((booking) => (
+                <li key={booking._id} className="booking-card">
+                  <img
+                    src={booking.image || "https://via.placeholder.com/100"}
+                    alt={booking.title}
+                    className="booking-image"
+                  />
+                  <div className="booking-details">
+                    <h3>{booking.title}</h3>
+                    <p><strong>Description:</strong> {booking.description || "No description"}</p>
+                    <p><strong>Count:</strong> {booking.count || 1}</p>
+                    <p><strong>Price per item:</strong> ${booking.price}</p>
+                    <p><strong>Total Price:</strong> ${(booking.price * (booking.count || 1)).toFixed(2)}</p>
+                    <p><strong>Status:</strong> {booking.status}</p>
+                    {booking.status === "Pending" && (
+                      <div className="booking-actions">
+                        <button
+                          onClick={() => handleStatusUpdate(booking._id, "Confirmed")}
+                          className="confirm-btn"
+                        >
+                          Confirm
+                        </button>
+                        <button
+                          onClick={() => handleStatusUpdate(booking._id, "Cancelled")}
+                          className="cancel-btn"
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <div className="booking-summary">
+              <h3>Summary</h3>
+              <p><strong>Total Items:</strong> {bookings.length}</p>
+              <p><strong>Total Money:</strong> ${totalMoney.toFixed(2)}</p>
             </div>
-          ))}
-        </div>
-        
-        <div className="booking-options">
-          <h3>Additional Services</h3>
-          <div className="options-grid">
-            <div className="option-item">
-              <input type="checkbox" id="catering" />
-              <label htmlFor="catering">Catering Services</label>
-            </div>
-            <div className="option-item">
-              <input type="checkbox" id="decoration" />
-              <label htmlFor="decoration">Decoration Setup</label>
-            </div>
-            <div className="option-item">
-              <input type="checkbox" id="photography" />
-              <label htmlFor="photography">Photography Package</label>
-            </div>
-            <div className="option-item">
-              <input type="checkbox" id="transport" />
-              <label htmlFor="transport">Transportation</label>
-            </div>
-          </div>
-        </div>
-        
-        <div className="booking-actions">
-          <button 
-            className="booking-action-btn cancel-btn" 
-            onClick={handleCancelBooking}
-          >
-            Back to Shopping
-          </button>
-          
-          <button 
-            className="booking-action-btn confirm-btn" 
-            onClick={handleConfirmAllBookings}
-          >
-            Confirm All Bookings
-          </button>
-        </div>
+          </>
+        ) : (
+          <p>No bookings found.</p>
+        )}
       </div>
-    </div>
+      <Footer />
+    </>
   );
 };
 
