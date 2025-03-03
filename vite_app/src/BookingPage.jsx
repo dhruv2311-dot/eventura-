@@ -17,7 +17,7 @@ const BookingPage = () => {
   const fetchBookings = async (userId) => {
     try {
       console.log("Fetching bookings for user ID:", userId);
-      const response = await fetch(`http://localhost:5000/bookings/${encodeURIComponent(userId)}`, {
+      const response = await fetch(`https://eventura-10.onrender.com/bookings/${encodeURIComponent(userId)}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -49,7 +49,7 @@ const BookingPage = () => {
 
   const handleStatusUpdate = async (bookingId, newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/bookings/${encodeURIComponent(user.sub)}/${bookingId}`, {
+      const response = await fetch(`https://eventura-10.onrender.com/bookings/${encodeURIComponent(user.sub)}/${bookingId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
