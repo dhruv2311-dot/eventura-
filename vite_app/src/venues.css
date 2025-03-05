@@ -1,4 +1,20 @@
 /* 🔥 Structured Live Search Results */
+.venue-card {
+  position: relative; /* To position the heart icon absolutely within the card */
+}
+
+.heart-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.heart-icon.saved {
+  color: red;
+}
 .search-results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

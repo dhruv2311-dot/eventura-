@@ -23,6 +23,7 @@ import Authuser from "./Authuser";
 import Discount from "./discount";
 import Feedback from "./feedback";
 import Booking from "./BookingPage";
+import SavedVenues from "./SavedVenues";
 
 function App() {
   const { user, isAuthenticated } = useAuth0();
@@ -48,6 +49,7 @@ function App() {
           <Route path="/aboutus" element={<ProtectedRoute><AboutUs /></ProtectedRoute>} />
           <Route path="/discounts" element={<ProtectedRoute><Discount /></ProtectedRoute>} />
           <Route path="/feedback" element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
+          <Route path="/savedVenues" element={<ProtectedRoute><SavedVenues /></ProtectedRoute>} />  {/* ✅ SavedVenues me userId pass kar raha hu */}
           
           {/* ✅ BookingPage me userId pass kar raha hu */}
           <Route path="/booking" element={<ProtectedRoute><Booking userId={userId} /></ProtectedRoute>} /> 

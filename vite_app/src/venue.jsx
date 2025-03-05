@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from "@auth0/auth0-react"; // Add Auth0
+import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 import Navbar from './navbar';
 import Footer from './footer';
 import './venues.css';
 import loaderGif from './assets/loader.gif';
-import { toast } from "react-toastify"; // Ensure toast is imported
+import { toast } from "react-toastify";
 
 const Venue = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth0(); // Auth0 hook
-  const [searchCategory, setSearchCategory] = useState(""); // Venue Name
-  const [searchLocation, setSearchLocation] = useState(""); // Venue Location
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth0();
+  const [searchCategory, setSearchCategory] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [allVenues, setAllVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [savedVenues, setSavedVenues] = useState([]);
 
   useEffect(() => {
     axios
@@ -31,14 +32,60 @@ const Venue = () => {
         setError(error);
         setLoading(false);
       });
-  }, []);
+
+    if (isAuthenticated && user?.sub) {
+      console.log("Auth0 ID:", user.sub); // Debug
+      fetchSavedVenues();
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchSavedVenues = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/users/${user.sub}/saved-venues`);
+      console.log("Saved venues response:", response.data); // Debug
+      setSavedVenues(response.data.savedVenues || []);
+    } catch (error) {
+      console.error("Error fetching saved venues:", error.response?.data || error.message);
+      toast.error("Failed to load saved venues.");
+    }
+  };
+
+  const handleSaveVenue = async (venueId) => {
+    if (!isAuthenticated || !user?.sub) {
+      toast.error("Please log in to save venues.");
+      navigate("/login");
+      return;
+    }
+
+    const isSaved = savedVenues.includes(venueId);
+    console.log("Saving venue:", { venueId, action: isSaved ? "remove" : "add" }); // Debug
+    try {
+      const response = await axios.post(`http://localhost:5000/users/${user.sub}/saved-venues`, {
+        venueId,
+        action: isSaved ? "remove" : "add",
+      });
+
+      console.log("Save venue response:", response.data); // Debug
+      if (response.status === 200) {
+        if (isSaved) {
+          setSavedVenues(savedVenues.filter((id) => id !== venueId));
+          toast.success("Venue removed from saved list!");
+        } else {
+          setSavedVenues([...savedVenues, venueId]);
+          toast.success("Venue saved successfully!");
+        }
+      }
+    } catch (error) {
+      console.error("Error saving venue:", error.response?.data || error.message);
+      toast.error("Failed to save venue: " + (error.response?.data?.message || "Unknown error"));
+    }
+  };
 
   const handleBookNow = async (itemId) => {
     try {
-      // Ensure user is authenticated
       if (!isAuthenticated || !user?.sub) {
         toast.error("Please log in to book.");
-        navigate("/login"); // Adjust this route as needed
+        navigate("/login");
         return;
       }
 
@@ -52,14 +99,14 @@ const Venue = () => {
       }
 
       const bookingData = {
-        userId: user.sub, // Auth0 user ID
-        title: item.name, // Venue name as title
-        image: item.images?.[0] || "https://via.placeholder.com/100", // First image or fallback
+        userId: user.sub,
+        title: item.name,
+        image: item.images?.[0] || "https://via.placeholder.com/100",
         description: item.description || "No description available",
-        price: item.price_per_day || 50, // Venue price or default
-        type: "venue", // Fixed as venue
-        venueId: item._id, // Venue ID
-        count: 1, // Default count
+        price: item.price_per_day || 50,
+        type: "venue",
+        venueId: item._id,
+        count: 1,
         status: "Pending",
       };
 
@@ -82,7 +129,6 @@ const Venue = () => {
     }
   };
 
-  // 🔍 Handle Live Search for Both Inputs
   const handleLiveSearch = (type, value) => {
     if (type === "category") {
       setSearchCategory(value);
@@ -158,12 +204,21 @@ const Venue = () => {
                 <button
                   className="book-now-btn"
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevent navigation to venue details
+                    e.stopPropagation();
                     handleBookNow(venue._id);
                   }}
                 >
                   Book Now
                 </button>
+                <span
+                  className={`heart-icon ${savedVenues.includes(venue._id) ? "saved" : ""}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSaveVenue(venue._id);
+                  }}
+                >
+                  {savedVenues.includes(venue._id) ? "❤️" : "🤍"}
+                </span>
               </div>
             ))
           ) : (
