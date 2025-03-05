@@ -95,7 +95,7 @@
 .mobile-drawer {
   display: none;
   position: fixed;
-  top: 80px; /* Adjust based on your header height */
+  top: 80px;
   right: 0;
   width: 280px;
   height: 100%;
@@ -158,31 +158,42 @@
   .logo-image {
     height: 35px;
   }
+  .nav-links {
+    gap: 15px; /* Reduced gap for better fit */
+  }
+  .right-section {
+    gap: 8px; /* Adjusted for smaller screens */
+  }
 }
 
 @media (max-width: 768px) {
   .eventura-header {
     padding: 8px 15px;
   }
-  
   .desktop-nav {
     display: none;
   }
-  
   .desktop-right {
     display: none;
   }
-  
   .hamburger-menu {
     display: block;
   }
-  
   .mobile-drawer {
     display: block;
+    transform: translateX(100%); /* Hidden by default */
   }
-  
+  .mobile-drawer.active { /* Added class for active state */
+    transform: translateX(0); /* Visible when active */
+  }
   .logo-image {
     height: 30px;
+  }
+  .nav-links {
+    display: none; /* Ensure nav-links hide properly */
+  }
+  .right-section {
+    display: none; /* Ensure right-section hides properly */
   }
 }
 
@@ -190,17 +201,41 @@
   .eventura-header {
     padding: 5px 10px;
   }
-  
   .logo-image {
     height: 25px;
   }
-  
   .mobile-drawer {
     width: 240px;
     padding: 15px;
   }
-  
   .hamburger-menu {
     font-size: 20px;
+  }
+}
+
+/* Additional Media Query for 727-920px Range */
+@media (min-width: 727px) and (max-width: 920px) {
+  .eventura-header {
+    padding: 10px 15px;
+  }
+  .nav-links {
+    gap: 10px; /* Further reduced gap */
+    flex-wrap: wrap; /* Allow wrapping if needed */
+  }
+  .nav-links a {
+    font-size: 14px; /* Slightly smaller text */
+  }
+  .right-section {
+    gap: 6px;
+  }
+  .icon1 {
+    font-size: 18px;
+  }
+  .logout-button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  .language-select {
+    padding: 4px;
   }
 }

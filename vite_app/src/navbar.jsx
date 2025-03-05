@@ -61,41 +61,39 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Drawer */}
-        {isDrawerOpen && (
-          <div className="mobile-drawer">
-            <nav className="mobile-nav-links">
-              <Link to="/" onClick={toggleDrawer}>HOME</Link>
-              <Link to="/venue" onClick={toggleDrawer}>VENUES</Link>
-              <Link to="/events" onClick={toggleDrawer}>EVENTS</Link>
-              <Link to="/projects" onClick={toggleDrawer}>PROJECTS</Link>
-              <Link to="/blogs" onClick={toggleDrawer}>BLOGS</Link>
-              <Link to="/contactus" onClick={toggleDrawer}>CONTACT US</Link>
-              <Link to="/aboutus" onClick={toggleDrawer}>ABOUT US</Link>
-            </nav>
-            <div className="mobile-right-section">
-              <div className="mobile-icon" onClick={handleProfile}>
-                <FiUser className="icon1" /> Profile
-              </div>
-              <div className="mobile-icon">
-                <FiSearch className="icon1" /> Search
-              </div>
-              <select className="language-select">
-                <option>ENGLISH</option>
-              </select>
-              {isAuthenticated && (
-                <button
-                  className="logout-button"
-                  onClick={() => {
-                    logout({ logoutParams: { returnTo: window.location.origin } });
-                    setIsDrawerOpen(false);
-                  }}
-                >
-                  Logout
-                </button>
-              )}
+        <div className={`mobile-drawer ${isDrawerOpen ? 'active' : ''}`}>
+          <nav className="mobile-nav-links">
+            <Link to="/" onClick={toggleDrawer}>HOME</Link>
+            <Link to="/venue" onClick={toggleDrawer}>VENUES</Link>
+            <Link to="/events" onClick={toggleDrawer}>EVENTS</Link>
+            <Link to="/projects" onClick={toggleDrawer}>PROJECTS</Link>
+            <Link to="/blogs" onClick={toggleDrawer}>BLOGS</Link>
+            <Link to="/contactus" onClick={toggleDrawer}>CONTACT US</Link>
+            <Link to="/aboutus" onClick={toggleDrawer}>ABOUT US</Link>
+          </nav>
+          <div className="mobile-right-section">
+            <div className="mobile-icon" onClick={handleProfile}>
+              <FiUser className="icon1" /> Profile
             </div>
+            <div className="mobile-icon">
+              <FiSearch className="icon1" /> Search
+            </div>
+            <select className="language-select">
+              <option>ENGLISH</option>
+            </select>
+            {isAuthenticated && (
+              <button
+                className="logout-button"
+                onClick={() => {
+                  logout({ logoutParams: { returnTo: window.location.origin } });
+                  setIsDrawerOpen(false);
+                }}
+              >
+                Logout
+              </button>
+            )}
           </div>
-        )}
+        </div>
       </header>
     </div>
   );
