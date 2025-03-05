@@ -11,7 +11,7 @@ app.use(express.json());
 
 const uri = "mongodb+srv://dhruvsonagra23:dhruv1723@event23.6qktv.mongodb.net/";
 const dbName = "eventura";
-let db, eventsCollection;
+let db, upcomingEventsCollection; // Updated variable name
 
 async function initializeDatabase() {
     try {
@@ -20,7 +20,7 @@ async function initializeDatabase() {
         console.log("🟢 Connected to MongoDB Atlas");
 
         db = client.db(dbName);
-        eventsCollection = db.collection("events");
+        upcomingEventsCollection = db.collection("upcomingevents"); // Updated collection name
 
         app.listen(port, () => {
             console.log(`🚀 Server running at http://localhost:${port}`);
@@ -33,9 +33,9 @@ async function initializeDatabase() {
 initializeDatabase();
 
 // Get all upcoming events
-app.get("/events", async (req, res) => {
+app.get("/upcomingevents", async (req, res) => {
     try {
-        const events = await eventsCollection.find({ status: "Upcoming" }).toArray();
+        const events = await upcomingEventsCollection.find({ status: "Upcoming" }).toArray(); // Updated collection
         console.log("Fetched events:", events);
         res.status(200).json(events);
     } catch (error) {
@@ -45,9 +45,9 @@ app.get("/events", async (req, res) => {
 });
 
 // Get a single event by ID
-app.get("/events/:id", async (req, res) => {
+app.get("/upcomingevents/:id", async (req, res) => {
     try {
-        const event = await eventsCollection.findOne({ _id: new ObjectId(req.params.id) });
+        const event = await upcomingEventsCollection.findOne({ _id: new ObjectId(req.params.id) }); // Updated collection
         if (!event) {
             return res.status(404).json({ message: "Event not found" });
         }
