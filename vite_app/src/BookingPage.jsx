@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import './BookingPage.css';
 import Navbar from './navbar';
 import Footer from './footer';
+
 const BookingPage = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [bookings, setBookings] = useState([]);
@@ -68,8 +69,12 @@ const BookingPage = () => {
     }
   };
 
-  // Calculate total money
-  const totalMoney = bookings.reduce((sum, booking) => sum + (booking.price * (booking.count || 1)), 0);
+  // Filter active bookings (Pending and Confirmed) for totals
+  const activeBookings = bookings.filter(booking => booking.status !== "Cancelled");
+
+  // Calculate total money and items for active bookings only
+  const totalMoney = activeBookings.reduce((sum, booking) => sum + (booking.price * (booking.count || 1)), 0);
+  const totalItems = activeBookings.length;
 
   if (isLoading) return <p>Loading...</p>;
   if (!isAuthenticated) return <p>Please log in to view your bookings.</p>;
@@ -119,8 +124,8 @@ const BookingPage = () => {
             </ul>
             <div className="booking-summary">
               <h3>Summary</h3>
-              <p><strong>Total Items:</strong> {bookings.length}</p>
-              <p><strong>Total Money:</strong> ${totalMoney.toFixed(2)}</p>
+              <p><strong>Total Active Items:</strong> {totalItems}</p>
+              <p><strong>Total Active Money:</strong> ${totalMoney.toFixed(2)}</p>
             </div>
           </>
         ) : (
