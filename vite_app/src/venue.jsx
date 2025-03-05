@@ -34,15 +34,15 @@ const Venue = () => {
       });
 
     if (isAuthenticated && user?.sub) {
-      console.log("Auth0 ID:", user.sub); // Debug
+      
       fetchSavedVenues();
     }
   }, [isAuthenticated, user]);
 
   const fetchSavedVenues = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/users/${user.sub}/saved-venues`);
-      console.log("Saved venues response:", response.data); // Debug
+      const response = await axios.get(`https://eventura-11.onrender.com/users/${user.sub}/saved-venues`);
+    
       setSavedVenues(response.data.savedVenues || []);
     } catch (error) {
       console.error("Error fetching saved venues:", error.response?.data || error.message);
@@ -60,7 +60,7 @@ const Venue = () => {
     const isSaved = savedVenues.includes(venueId);
     console.log("Saving venue:", { venueId, action: isSaved ? "remove" : "add" }); // Debug
     try {
-      const response = await axios.post(`http://localhost:5000/users/${user.sub}/saved-venues`, {
+      const response = await axios.post(`https://eventura-11.onrender.com/users/${user.sub}/saved-venues`, {
         venueId,
         action: isSaved ? "remove" : "add",
       });
