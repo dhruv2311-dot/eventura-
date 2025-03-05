@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import Footer from './footer';
-import './venues.css';
 import { useNavigate } from 'react-router-dom';
+import { useAuth0 } from "@auth0/auth0-react"; // Add Auth0
 import axios from 'axios';
 import Navbar from './navbar';
-import loaderGif from './assets/loader.gif'; 
+import Footer from './footer';
+import './venues.css';
+import loaderGif from './assets/loader.gif';
+import { toast } from "react-toastify"; // Ensure toast is imported
+
 const Venue = () => {
   const navigate = useNavigate();
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth0(); // Auth0 hook
   const [searchCategory, setSearchCategory] = useState(""); // Venue Name
   const [searchLocation, setSearchLocation] = useState(""); // Venue Location
   const [filteredVenues, setFilteredVenues] = useState([]);
@@ -19,7 +23,7 @@ const Venue = () => {
       .get("https://eventura-2.onrender.com/venues")
       .then((response) => {
         setAllVenues(response.data);
-        setFilteredVenues(response.data); // Show all venues by default
+        setFilteredVenues(response.data);
         setLoading(false);
       })
       .catch((error) => {
@@ -29,6 +33,55 @@ const Venue = () => {
       });
   }, []);
 
+  const handleBookNow = async (itemId) => {
+    try {
+      // Ensure user is authenticated
+      if (!isAuthenticated || !user?.sub) {
+        toast.error("Please log in to book.");
+        navigate("/login"); // Adjust this route as needed
+        return;
+      }
+
+      const apiUrl = `https://eventura-2.onrender.com/venues/${itemId}`;
+      const response = await fetch(apiUrl);
+      const item = await response.json();
+
+      if (!response.ok || !item) {
+        toast.error("Failed to fetch venue details.");
+        return;
+      }
+
+      const bookingData = {
+        userId: user.sub, // Auth0 user ID
+        title: item.name, // Venue name as title
+        image: item.images?.[0] || "https://via.placeholder.com/100", // First image or fallback
+        description: item.description || "No description available",
+        price: item.price_per_day || 50, // Venue price or default
+        type: "venue", // Fixed as venue
+        venueId: item._id, // Venue ID
+        count: 1, // Default count
+        status: "Pending",
+      };
+
+      const saveResponse = await fetch("https://eventura-10.onrender.com/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bookingData),
+      });
+
+      if (saveResponse.ok) {
+        toast.success("Booking request sent successfully!");
+        navigate("/booking");
+      } else {
+        const errorData = await saveResponse.json();
+        toast.error(`Failed to send booking request: ${errorData.message || "Unknown error"}`);
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      toast.error("Error while booking.");
+    }
+  };
+
   // 🔍 Handle Live Search for Both Inputs
   const handleLiveSearch = (type, value) => {
     if (type === "category") {
@@ -37,7 +90,6 @@ const Venue = () => {
       setSearchLocation(value);
     }
 
-    // Filter venues based on search inputs
     const filtered = allVenues.filter((venue) =>
       venue.name.toLowerCase().includes(searchCategory.toLowerCase()) &&
       venue.location.toLowerCase().includes(searchLocation.toLowerCase())
@@ -45,7 +97,8 @@ const Venue = () => {
 
     setFilteredVenues(filtered);
   };
-  if (loading) {
+
+  if (authLoading || loading) {
     return (
       <div className="loader-container">
         <img src={loaderGif} alt="Loading..." className="loader" />
@@ -56,11 +109,10 @@ const Venue = () => {
   if (error) {
     return <h2 className="error">Error loading venues.</h2>;
   }
+
   return (
     <>
       <Navbar />
-
-      {/* Hero Section */}
       <section
         className="hero-section-2"
         style={{
@@ -103,6 +155,15 @@ const Venue = () => {
                 <h3 className="venue-name">{venue.name}</h3>
                 <p className="venue-location">📍 {venue.location}</p>
                 <p className="venue-price">💰 ${venue.price_per_day} per day</p>
+                <button
+                  className="book-now-btn"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent navigation to venue details
+                    handleBookNow(venue._id);
+                  }}
+                >
+                  Book Now
+                </button>
               </div>
             ))
           ) : (
@@ -111,10 +172,10 @@ const Venue = () => {
         </div>
       </div>
       <div className="container">
-        <img 
-          src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTot0czju3Rw2f9QpIuhuZcKG2OHcDb5s6TYwtZ9QVRZqCOIJUn" 
-          alt="Venue Image" 
-          className="image" 
+        <img
+          src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcTot0czju3Rw2f9QpIuhuZcKG2OHcDb5s6TYwtZ9QVRZqCOIJUn"
+          alt="Venue Image"
+          className="image"
         />
         <div className="text-container">
           <h1 className="title">Perfect Venue, Memorable Events.</h1>
@@ -129,4 +190,3 @@ const Venue = () => {
 };
 
 export default Venue;
-
