@@ -61,7 +61,7 @@ const ProfilePage = () => {
             <li><FaUser /> Personal Details</li>
             <li><FaCalendarAlt onClick={()=>navigate(`/booking`)} /> My Bookings</li>
             <li><FaHeart onClick={()=>navigate(`/savedVenues`)}/> Saved Venues</li>
-            <li><FaRegCalendarCheck /> Upcoming Events</li>
+            <li><FaRegCalendarCheck onClick={()=>navigate(`/upcomingevents`)} /> Upcoming Events</li>
             <li><FaCog /> Settings</li>
           </ul>
         </div>
