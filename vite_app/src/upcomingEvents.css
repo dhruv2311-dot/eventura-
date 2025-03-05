@@ -1,272 +1,259 @@
 /* General Styles */
 .upcoming-events-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-  }
-  
-  /* Hero Section */
-  .upcoming-events-hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-      url('https://images.unsplash.com/photo-1517457373958-b7bdd7f6b99f');
-    background-size: cover;
-    background-position: center;
-    height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
-  }
-  
-  .hero-overlay h1 {
-    font-size: 3rem;
-    margin-bottom: 10px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  }
-  
-  .hero-overlay p {
-    font-size: 1.2rem;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Events Grid */
-  .events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
-  }
-  
-  /* Event Card */
-  .event-card {
-    background: white;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .event-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  }
-  
-  .event-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-  }
-  
-  .event-info {
-    padding: 20px;
-    flex-grow: 1;
-  }
-  
-  .event-info h3 {
-    font-size: 1.5rem;
-    margin: 0 0 10px;
-    color: #333;
-  }
-  
-  .date,
-  .location {
-    font-size: 1rem;
-    color: #666;
-    margin: 5px 0;
-  }
-  
-  /* Popup Styles */
-  .event-popup-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.3s ease;
-  }
-  
-  .event-popup {
-    background: white;
-    border-radius: 15px;
-    max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
-    position: relative;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-    animation: slideUp 0.3s ease;
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .close-btn:hover {
-    background: #c0392b;
-  }
-  
-  .popup-image {
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-    border-bottom: 2px solid #ddd;
-  }
-  
-  .popup-details {
-    padding: 20px;
-  }
-  
-  .popup-details h2 {
-    font-size: 1.8rem;
-    margin: 0 0 15px;
-    color: #333;
-  }
-  
-  .popup-details .date,
-  .popup-details .location,
-  .popup-details .description,
-  .popup-details .organizer,
-  .popup-details .category,
-  .popup-details .price,
-  .popup-details .duration,
-  .popup-details .capacity {
-    font-size: 1rem;
-    color: #555;
-    margin: 10px 0;
-  }
-  
-  .popup-details .description {
-    font-style: italic;
-    color: #444;
-  }
-  
-  .book-now-btn2 {
-    margin-top: 20px;
-    padding: 12px 25px;
-    background: #e67e22;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .book-now-btn2:hover {
-    background: #d35400;
-    transform: scale(1.05);
-  }
-  
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  @keyframes slideUp {
-    from { transform: translateY(50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-  
-  /* No Events */
-  .no-events {
-    text-align: center;
-    padding: 50px 20px;
-  }
-  
-  .no-events h2 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 15px;
-  }
-  
-  .no-events p {
-    font-size: 1.2rem;
-    color: #666;
-  }
-  
-  /* Loader */
-  .loader-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-  }
-  
-  .spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #e67e22;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .loader-container p {
-    margin-top: 20px;
-    font-size: 1.2rem;
-    color: #666;
-  }
-  
-  /* Not Authenticated */
-  .not-authenticated {
-    text-align: center;
-    padding: 100px 20px;
-  }
-  
-  .not-authenticated h2 {
-    font-size: 2rem;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  .not-authenticated button {
-    padding: 12px 30px;
-    background: #e67e22;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  
-  .not-authenticated button:hover {
-    background: #d35400;
-  }
-  
-  /* Error */
-  .error {
-    text-align: center;
-    padding: 100px 20px;
-    font-size: 2rem;
-    color: #e74c3c;
-  }
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+   /* Subtle background for contrast */
+}
+
+/* Hero Section */
+.upcoming-events-hero {
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+    url('https://www.shutterstock.com/image-vector/upcoming-events-paper-word-sign-260nw-2384341189.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+}
+
+.hero-overlay h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-overlay p {
+  font-size: 1.2rem;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Events Grid */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px; /* Consistent, structured spacing */
+}
+
+/* Event Card */
+.event-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0; /* Subtle border for definition */
+}
+
+.event-image {
+  width: 100%;
+  height: auto; /* Full natural height, no cropping */
+  object-fit: contain; /* Ensures entire image is visible */
+  background: #fff; /* White background for consistency */
+}
+
+.event-info {
+  padding: 20px;
+  background: #fff;
+  border-top: 1px solid #eee;
+  flex-grow: 1;
+}
+
+.event-title {
+  font-size: 1.6rem;
+  margin: 0 0 12px;
+  color: #2c3e50; /* Darker shade for elegance */
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+
+
+.event-date,
+.event-location {
+  font-size: 1.1rem;
+  color: #7f8c8d; /* Softer gray for readability */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  font-size: 1.3rem;
+  color: #e74c3c; /* Vibrant red for icons */
+}
+
+/* Popup Styles */
+.event-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.event-popup {
+  background: white;
+  border-radius: 15px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: #c0392b;
+}
+
+.popup-image {
+  width: 100%;
+  height: auto; /* Full natural height in popup */
+  object-fit: contain;
+  border-bottom: 2px solid #ddd;
+}
+
+.popup-details {
+  padding: 25px;
+}
+
+.popup-details h2 {
+  font-size: 2rem;
+  margin: 0 0 15px;
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.popup-details .date,
+.popup-details .location,
+.popup-details .description,
+.popup-details .organizer,
+.popup-details .category,
+.popup-details .price,
+.popup-details .duration,
+.popup-details .capacity {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 12px 0;
+  line-height: 1.5;
+}
+
+.popup-details .description {
+  font-style: italic;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.book-now-btn2 {
+  margin-top: 25px;
+  padding: 12px 30px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.book-now-btn2:hover {
+  background: #c0392b;
+}
+
+/* No Events */
+.no-events {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.no-events h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.no-events p {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+}
+
+/* Loader */
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #e74c3c;
+  border-radius: 50%;
+}
+
+/* Not Authenticated */
+.not-authenticated {
+  text-align: center;
+  padding: 100px 20px;
+}
+
+.not-authenticated h2 {
+  font-size: 2rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+.not-authenticated button {
+  padding: 12px 30px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.not-authenticated button:hover {
+  background: #c0392b;
+}
+
+/* Error */
+.error {
+  text-align: center;
+  padding: 100px 20px;
+  font-size: 2rem;
+  color: #e74c3c;
+}
