@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react"; 
 import "./profile.css";
-import { FaHeart, FaUser, FaCalendarAlt, FaCreditCard, FaCog } from "react-icons/fa";
+import { FaHeart, FaUser, FaCalendarAlt, FaRegCalendarCheck, FaCog } from "react-icons/fa";
 import Footer from './footer';
 import Navbar from "./navbar";
+
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ const ProfilePage = () => {
             <li><FaUser /> Personal Details</li>
             <li><FaCalendarAlt onClick={()=>navigate(`/booking`)} /> My Bookings</li>
             <li><FaHeart onClick={()=>navigate(`/savedVenues`)}/> Saved Venues</li>
-            <li><FaCreditCard /> Payment Details</li>
+            <li><FaRegCalendarCheck onClick={()=>navigate(`/upcomingevents`)} /> Upcoming Events</li>
             <li><FaCog /> Settings</li>
           </ul>
         </div>

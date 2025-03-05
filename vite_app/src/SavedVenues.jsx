@@ -23,11 +23,11 @@ const SavedVenues = () => {
   const fetchSavedVenues = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`http://localhost:5000/users/${user.sub}/saved-venues`);
+      const response = await axios.get(`https://eventura-11.onrender.com/users/${user.sub}/saved-venues`);
       const venueIds = response.data.savedVenues || [];
       const venueDetails = await Promise.all(
         venueIds.map((id) =>
-          axios.get(`http://localhost:5000/venues/${id}`).then((res) => res.data)
+          axios.get(`https://eventura-11.onrender.com/venues/${id}`).then((res) => res.data)
         )
       );
       setSavedVenues(venueDetails);
@@ -42,7 +42,7 @@ const SavedVenues = () => {
 
   const handleRemoveVenue = async (venueId) => {
     try {
-      const response = await axios.post(`http://localhost:5000/users/${user.sub}/saved-venues`, {
+      const response = await axios.post(`https://eventura-11.onrender.com/users/${user.sub}/saved-venues`, {
         venueId,
         action: "remove",
       });
