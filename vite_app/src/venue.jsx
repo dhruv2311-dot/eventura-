@@ -17,10 +17,9 @@ const Venue = () => {
   const [allVenues, setAllVenues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [savedVenues, setSavedVenues] = useState([]); // New state for saved venues
+  const [savedVenues, setSavedVenues] = useState([]);
 
   useEffect(() => {
-    // Fetch all venues
     axios
       .get("https://eventura-2.onrender.com/venues")
       .then((response) => {
@@ -34,8 +33,8 @@ const Venue = () => {
         setLoading(false);
       });
 
-    // Fetch saved venues if authenticated
     if (isAuthenticated && user?.sub) {
+      console.log("Auth0 ID:", user.sub); // Debug
       fetchSavedVenues();
     }
   }, [isAuthenticated, user]);
@@ -43,9 +42,10 @@ const Venue = () => {
   const fetchSavedVenues = async () => {
     try {
       const response = await axios.get(`http://localhost:5000/users/${user.sub}/saved-venues`);
+      console.log("Saved venues response:", response.data); // Debug
       setSavedVenues(response.data.savedVenues || []);
     } catch (error) {
-      console.error("Error fetching saved venues:", error);
+      console.error("Error fetching saved venues:", error.response?.data || error.message);
       toast.error("Failed to load saved venues.");
     }
   };
@@ -58,12 +58,14 @@ const Venue = () => {
     }
 
     const isSaved = savedVenues.includes(venueId);
+    console.log("Saving venue:", { venueId, action: isSaved ? "remove" : "add" }); // Debug
     try {
       const response = await axios.post(`http://localhost:5000/users/${user.sub}/saved-venues`, {
         venueId,
         action: isSaved ? "remove" : "add",
       });
 
+      console.log("Save venue response:", response.data); // Debug
       if (response.status === 200) {
         if (isSaved) {
           setSavedVenues(savedVenues.filter((id) => id !== venueId));
@@ -74,8 +76,8 @@ const Venue = () => {
         }
       }
     } catch (error) {
-      console.error("Error saving venue:", error);
-      toast.error("Failed to save venue.");
+      console.error("Error saving venue:", error.response?.data || error.message);
+      toast.error("Failed to save venue: " + (error.response?.data?.message || "Unknown error"));
     }
   };
 
