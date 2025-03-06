@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useData } from "./DataFetcher"; // Importing data
 import { useAuth0 } from "@auth0/auth0-react"; // Add Auth0
+import axios from "axios"; // Add axios for API calls
 import Navbar from "./navbar";
 import Footer from "./footer";
 import "./homepage.css";
@@ -9,13 +10,61 @@ import { toast } from "react-toastify";
 
 const Homepage = () => {
   const { categories, venues, team, reviews, loading, error } = useData();
-  const { user, isAuthenticated, isLoading: authLoading } = useAuth0(); // Auth0 hook
+  const { user, isAuthenticated, isLoading: authLoading } = useAuth0();
   const [searchCategory, setSearchCategory] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
   const [filteredCategories, setFilteredCategories] = useState([]);
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [searchType, setSearchType] = useState(null); // "category" or "location"
+  const [savedVenues, setSavedVenues] = useState([]); // State for saved venues
   const navigate = useNavigate();
+
+  // Fetch saved venues when authenticated
+  useEffect(() => {
+    if (isAuthenticated && user?.sub) {
+      fetchSavedVenues();
+    }
+  }, [isAuthenticated, user]);
+
+  const fetchSavedVenues = async () => {
+    try {
+      const response = await axios.get(`https://eventura-11.onrender.com/users/${user.sub}/saved-venues`);
+      setSavedVenues(response.data.savedVenues || []);
+    } catch (error) {
+      console.error("Error fetching saved venues:", error);
+      toast.error("Failed to load saved venues.");
+    }
+  };
+
+  // Handle saving/unsaving venues
+  const handleSaveVenue = async (venueId) => {
+    if (!isAuthenticated || !user?.sub) {
+      toast.error("Please log in to save venues.");
+      navigate("/login");
+      return;
+    }
+
+    const isSaved = savedVenues.includes(venueId);
+    try {
+      const response = await axios.post(`https://eventura-11.onrender.com/users/${user.sub}/saved-venues`, {
+        venueId,
+        action: isSaved ? "remove" : "add",
+      });
+
+      if (response.status === 200) {
+        if (isSaved) {
+          setSavedVenues(savedVenues.filter((id) => id !== venueId));
+          toast.success("Venue removed from saved list!");
+        } else {
+          setSavedVenues([...savedVenues, venueId]);
+          toast.success("Venue saved successfully!");
+        }
+      }
+    } catch (error) {
+      console.error("Error saving venue:", error.response?.data || error.message);
+      toast.error("Failed to save venue.");
+    }
+  };
 
   // Handle loading states
   if (authLoading || loading) return <h2 className="loading">Loading...</h2>;
@@ -23,10 +72,9 @@ const Homepage = () => {
 
   const handleBookNow = async (itemId, type) => {
     try {
-      // Ensure user is authenticated
       if (!isAuthenticated || !user?.sub) {
         toast.error("Please log in to book.");
-        navigate("/login"); // Adjust this route as needed
+        navigate("/login");
         return;
       }
 
@@ -43,14 +91,14 @@ const Homepage = () => {
       }
 
       const bookingData = {
-        userId: user.sub, // Use Auth0 user ID
-        title: item.name, // Use category/venue name as title
+        userId: user.sub,
+        title: item.name,
         image: type === "category" ? item.featured_images?.[0] || item.image_url : item.images?.[0],
         description: item.description || "No description available",
-        price: item.price_per_day || 50, // Default price if not available
-        type: type === "category" ? "event" : "venue", // Adjust based on your backend
-        eventId: type === "category" ? item._id : null, // Optional
-        venueId: type === "venue" ? item._id : null, // Optional
+        price: item.price_per_day || 50,
+        type: type === "category" ? "event" : "venue",
+        eventId: type === "category" ? item._id : null,
+        venueId: type === "venue" ? item._id : null,
         status: "Pending",
       };
 
@@ -182,6 +230,15 @@ const Homepage = () => {
                     >
                       Book Now
                     </button>
+                    <span
+                      className={`heart-icon ${savedVenues.includes(venue._id) ? "saved" : ""}`}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the Link
+                        handleSaveVenue(venue._id);
+                      }}
+                    >
+                      {savedVenues.includes(venue._id) ? "❤️" : "🤍"}
+                    </span>
                   </div>
                 ))
               ) : (
@@ -238,6 +295,15 @@ const Homepage = () => {
                   >
                     Book Now
                   </button>
+                  <span
+                    className={`heart-icon ${savedVenues.includes(venue._id) ? "saved" : ""}`}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent triggering the Link
+                      handleSaveVenue(venue._id);
+                    }}
+                  >
+                    {savedVenues.includes(venue._id) ? "❤️" : "🤍"}
+                  </span>
                 </div>
               ))}
             </div>

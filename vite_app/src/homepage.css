@@ -1,3 +1,24 @@
+.heart-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.heart-icon.saved {
+  color: #e74c3c; /* Red when saved */
+}
+
+.heart-icon:not(.saved) {
+  color: #ccc; /* Gray when not saved */
+}
+
+.heart-icon:hover {
+  color: #e74c3c; /* Hover effect */
+}
+
 .book-now-btn {
   background-color: #ff4d4d;
   color: white;
