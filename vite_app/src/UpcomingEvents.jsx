@@ -25,7 +25,7 @@ const UpcomingEvents = () => {
   const fetchUpcomingEvents = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:5000/upcomingevents');
+      const response = await axios.get('https://eventura-12.onrender.com/upcomingevents');
       setEvents(response.data);
       setLoading(false);
     } catch (error) {
