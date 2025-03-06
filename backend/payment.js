@@ -1,6 +1,6 @@
 // backend/server.js
 const express = require("express");
-const stripe = require("stripe")("your_stripe_secret_key"); // Replace with your Secret Key
+const stripe = require("stripe")("sk_test_51QzdXNC6VkCbZF3lRvYOPfCr6WeOQDDojtOkRPNoQ4Q4eYDBTALVf51lmfCJK8k8xJYdLnisK8Cjukstv61Orvzo00KMc2nhXu"); // Replace with your Secret Key
 const app = express();
 
 app.use(express.json());
@@ -25,8 +25,8 @@ app.post("/create-checkout-session", async (req, res) => {
         },
       ],
       mode: "payment",
-      success_url: `https://your-frontend-domain.com/bookings?success=true&bookingId=${bookingId}&userId=${encodeURIComponent(userId)}`,
-      cancel_url: `https://your-frontend-domain.com/bookings?canceled=true`,
+      success_url: `http://localhost:5173/bookings?success=true&bookingId=${bookingId}&userId=${encodeURIComponent(userId)}`,
+      cancel_url: `http://localhost:5173/bookings?canceled=true`,
     });
 
     res.json({ id: session.id });
@@ -59,6 +59,6 @@ app.post("/confirm-booking", async (req, res) => {
   }
 });
 
-// Existing endpoints (fetchBookings, update status, etc.) remain unchanged...
+
 
 app.listen(3000, () => console.log("Server running on port 3000"));
