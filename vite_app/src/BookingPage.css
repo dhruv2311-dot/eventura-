@@ -1,4 +1,4 @@
-
+/* Existing styles remain unchanged up to .pay-btn:disabled */
 .payment-form {
   margin-top: 10px;
   padding: 10px;
@@ -20,17 +20,18 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
-.booking-page {
+
+/* General Page Styling */
+.booking-page, .payment-page, .success-page, .cancel-page {
   padding: 40px;
   max-width: 1000px;
   margin: 0 auto;
   font-family: 'Arial', sans-serif;
-  /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
   min-height: 100vh;
 }
 
-/* Header Styling */
-.booking-page h2 {
+/* Header Styling (Applied to all pages) */
+.booking-page h2, .payment-page h2, .success-page h2, .cancel-page h2 {
   font-size: 2.5rem;
   color: #2c3e50;
   text-align: center;
@@ -40,7 +41,7 @@
   position: relative;
 }
 
-.booking-page h2::after {
+.booking-page h2::after, .payment-page h2::after, .success-page h2::after, .cancel-page h2::after {
   content: '';
   width: 60px;
   height: 4px;
@@ -52,8 +53,8 @@
   border-radius: 2px;
 }
 
-/* Error Message */
-.booking-page p[style*="color: red"] {
+/* Error Message (Applied to all pages) */
+.booking-page p[style*="color: red"], .payment-page p[style*="color: red"] {
   background: #ffe6e6;
   padding: 10px 15px;
   border-radius: 8px;
@@ -63,7 +64,7 @@
   animation: fadeIn 0.5s ease-in;
 }
 
-/* Summary Section */
+/* Summary Section (Specific to BookingPage) */
 .booking-summary {
   background: #ffffff;
   padding: 20px;
@@ -89,14 +90,14 @@
   margin: 5px 0;
 }
 
-/* Booking List */
+/* Booking List (Specific to BookingPage) */
 .booking-list {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Booking Card */
+/* Booking Card (Specific to BookingPage) */
 .booking-card {
   border: none;
   padding: 20px;
@@ -221,6 +222,57 @@
   margin-top: 20px;
 }
 
+/* Payment Page Specific Styles */
+.payment-page .payment-form {
+  max-width: 400px;
+  margin: 20px auto;
+  background: #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.payment-page p {
+  font-size: 1.2rem;
+  color: #34495e;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Success and Cancel Page Specific Styles */
+.success-page, .cancel-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-page p, .cancel-page p {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin: 10px 0 20px;
+}
+
+.home-btn {
+  background: #3498db;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.home-btn:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {
@@ -233,17 +285,17 @@
   }
 }
 
-.booking-card {
+.booking-card, .payment-form, .success-page, .cancel-page {
   animation: fadeIn 0.5s ease-in;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .booking-page {
+  .booking-page, .payment-page, .success-page, .cancel-page {
     padding: 20px;
   }
 
-  .booking-page h2 {
+  .booking-page h2, .payment-page h2, .success-page h2, .cancel-page h2 {
     font-size: 2rem;
   }
 
@@ -288,10 +340,18 @@
   .booking-summary p {
     font-size: 1rem;
   }
+
+  .payment-page .payment-form {
+    padding: 15px;
+  }
+
+  .success-page p, .cancel-page p {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
-  .booking-page h2 {
+  .booking-page h2, .payment-page h2, .success-page h2, .cancel-page h2 {
     font-size: 1.8rem;
   }
 
@@ -306,5 +366,13 @@
 
   .booking-details h3 {
     font-size: 1.2rem;
+  }
+
+  .payment-page .payment-form {
+    padding: 10px;
+  }
+
+  .home-btn {
+    padding: 8px 16px;
   }
 }
