@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom"; // Add this for navigation
 import './BookingPage.css';
 import Navbar from './navbar';
 import Footer from './footer';
@@ -8,6 +9,7 @@ const BookingPage = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [bookings, setBookings] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate(); // Hook for navigation
 
   useEffect(() => {
     if (isAuthenticated && user?.sub) {
@@ -17,34 +19,25 @@ const BookingPage = () => {
 
   const fetchBookings = async (userId) => {
     try {
-      console.log("Fetching bookings for user ID:", userId);
       const response = await fetch(`https://eventura-10.onrender.com/bookings/${encodeURIComponent(userId)}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
         if (response.status === 404) {
           setBookings([]);
           setError("");
           return;
         }
-        throw new Error(`Server responded with ${response.status}: ${errorText || "Failed to fetch bookings"}`);
+        throw new Error("Failed to fetch bookings");
       }
 
       const data = await response.json();
-      console.log("Bookings data:", data);
-
-      if (!data.bookings || !Array.isArray(data.bookings)) {
-        throw new Error("No valid bookings found in response");
-      }
-
-      setBookings(data.bookings);
+      setBookings(data.bookings || []);
       setError("");
     } catch (err) {
       setError(err.message);
-      console.error("❌ Fetching bookings error:", err);
     }
   };
 
@@ -56,23 +49,19 @@ const BookingPage = () => {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update status: ${errorText}`);
-      }
-
-      // Refresh bookings after update
+      if (!response.ok) throw new Error("Failed to update status");
       fetchBookings(user.sub);
     } catch (err) {
       setError(err.message);
-      console.error("❌ Status update error:", err);
     }
   };
 
-  // Filter active bookings (Pending and Confirmed) for totals
-  const activeBookings = bookings.filter(booking => booking.status !== "Cancelled");
+  const handleConfirmWithPayment = (booking) => {
+    // Navigate to PaymentPage with booking details
+    navigate('/payment', { state: { bookingId: booking._id, amount: booking.price * (booking.count || 1) } });
+  };
 
-  // Calculate total money and items for active bookings only
+  const activeBookings = bookings.filter(booking => booking.status !== "Cancelled");
   const totalMoney = activeBookings.reduce((sum, booking) => sum + (booking.price * (booking.count || 1)), 0);
   const totalItems = activeBookings.length;
 
@@ -105,10 +94,10 @@ const BookingPage = () => {
                     {booking.status === "Pending" && (
                       <div className="booking-actions">
                         <button
-                          onClick={() => handleStatusUpdate(booking._id, "Confirmed")}
+                          onClick={() => handleConfirmWithPayment(booking)}
                           className="confirm-btn"
                         >
-                          Confirm
+                          Confirm & Pay
                         </button>
                         <button
                           onClick={() => handleStatusUpdate(booking._id, "Cancelled")}

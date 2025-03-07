@@ -1,64 +1,78 @@
-// backend/server.js
-const express = require("express");
-const stripe = require("stripe")("sk_test_51QzdXNC6VkCbZF3lRvYOPfCr6WeOQDDojtOkRPNoQ4Q4eYDBTALVf51lmfCJK8k8xJYdLnisK8Cjukstv61Orvzo00KMc2nhXu"); // Replace with your Secret Key
-const app = express();
+const express = require('express');
+const Stripe = require('stripe');
+const cors = require('cors');
 
+const app = express();
+const stripe = Stripe('sk_test_51QzdXNC6VkCbZF3lRvYOPfCr6WeOQDDojtOkRPNoQ4Q4eYDBTALVf51lmfCJK8k8xJYdLnisK8Cjukstv61Orvzo00KMc2nhXu'); // Replace with your Stripe secret key
+
+app.use(cors());
 app.use(express.json());
 
-// Endpoint to create Stripe Checkout session
-app.post("/create-checkout-session", async (req, res) => {
-  const { userId, bookingId, price, title, count } = req.body;
+// Existing booking endpoints (assuming you have these)
+app.get("/bookings/:userId", async (req, res) => {
+  try {
+      const userId = decodeURIComponent(req.params.userId);
+      console.log("✅ Backend Received User ID:", userId);
+
+      const bookings = await bookingsCollection.find({ userId }).toArray();
+
+      res.status(200).json({
+          bookings: bookings || [],
+          totalItems: bookings.length || 0,
+          totalPrice: bookings.reduce((sum, b) => sum + (b.price * (b.count || 1)), 0) || 0,
+      });
+  } catch (error) {
+      console.error("❌ Backend Error:", error);
+      res.status(500).json({ message: "Server error", error });
+  }
+});
+
+app.put('/bookings/:userId/:bookingId', async (req, res) => {
+  try {
+      const { userId, bookingId } = req.params;
+      const { status } = req.body;
+
+      if (!['Pending', 'Confirmed', 'Cancelled'].includes(status)) {
+          return res.status(400).json({ message: 'Invalid status value' });
+      }
+
+      if (!ObjectId.isValid(bookingId)) {
+          return res.status(400).json({ message: 'Invalid booking ID' });
+      }
+
+      const result = await bookingsCollection.updateOne(
+          { userId, _id: new ObjectId(bookingId) },
+          { $set: { status } }
+      );
+
+      if (result.matchedCount === 0) {
+          return res.status(404).json({ message: 'Booking not found' });
+      }
+
+      res.status(200).json({ message: `Booking ${status.toLowerCase()} successfully` });
+  } catch (error) {
+      console.error('🔴 Error updating booking status:', error);
+      res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+// New endpoint for Stripe payment intent
+app.post('/create-payment-intent', async (req, res) => {
+  const { amount } = req.body;
 
   try {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: "usd",
-            product_data: {
-              name: title,
-            },
-            unit_amount: price * 100, // Amount in cents
-          },
-          quantity: count || 1,
-        },
-      ],
-      mode: "payment",
-      success_url: `http://localhost:5173/bookings?success=true&bookingId=${bookingId}&userId=${encodeURIComponent(userId)}`,
-      cancel_url: `http://localhost:5173/bookings?canceled=true`,
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount, // Amount in cents
+      currency: 'usd', // Change currency as needed
+      payment_method_types: ['card'],
     });
 
-    res.json({ id: session.id });
+    res.json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
-    console.error("Error creating checkout session:", error);
-    res.status(500).json({ error: "Failed to create payment session" });
+    console.error("Error creating payment intent:", error);
+    res.status(500).json({ error: "Failed to create payment intent" });
   }
 });
 
-// Endpoint to confirm booking after payment
-app.post("/confirm-booking", async (req, res) => {
-  const { userId, bookingId } = req.body;
-
-  try {
-    // Assuming you have a Booking model (e.g., MongoDB)
-    const booking = await Booking.findOneAndUpdate(
-      { _id: bookingId, userId },
-      { status: "Confirmed" },
-      { new: true }
-    );
-
-    if (!booking) {
-      return res.status(404).json({ error: "Booking not found" });
-    }
-
-    res.json({ message: "Booking confirmed", booking });
-  } catch (error) {
-    console.error("Error confirming booking:", error);
-    res.status(500).json({ error: "Failed to confirm booking" });
-  }
-});
-
-
-
-app.listen(3000, () => console.log("Server running on port 3000"));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
