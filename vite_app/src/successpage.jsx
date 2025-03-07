@@ -13,7 +13,7 @@ const SuccessPage = () => {
       <div className="success-page">
         <h2>Payment Successful!</h2>
         <p>Your booking has been confirmed.</p>
-        <button onClick={() => navigate('/')} className="home-btn">
+        <button onClick={() => navigate('/homepage')} className="home-btn">
           Back to Homepage
         </button>
       </div>

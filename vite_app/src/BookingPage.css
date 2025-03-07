@@ -1,28 +1,5 @@
-/* Existing styles remain unchanged up to .pay-btn:disabled */
-.payment-form {
-  margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.pay-btn {
-  background-color: #6772e5;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.pay-btn:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
 /* General Page Styling */
-.booking-page, .payment-page, .success-page, .cancel-page {
+.booking-page, .success-page, .cancel-page {
   padding: 40px;
   max-width: 1000px;
   margin: 0 auto;
@@ -31,7 +8,7 @@
 }
 
 /* Header Styling (Applied to all pages) */
-.booking-page h2, .payment-page h2, .success-page h2, .cancel-page h2 {
+.booking-page h2, .success-page h2, .cancel-page h2 {
   font-size: 2.5rem;
   color: #2c3e50;
   text-align: center;
@@ -41,7 +18,7 @@
   position: relative;
 }
 
-.booking-page h2::after, .payment-page h2::after, .success-page h2::after, .cancel-page h2::after {
+.booking-page h2::after, .success-page h2::after, .cancel-page h2::after {
   content: '';
   width: 60px;
   height: 4px;
@@ -54,7 +31,7 @@
 }
 
 /* Error Message (Applied to all pages) */
-.booking-page p[style*="color: red"], .payment-page p[style*="color: red"] {
+.booking-page p[style*="color: red"] {
   background: #ffe6e6;
   padding: 10px 15px;
   border-radius: 8px;
@@ -174,6 +151,7 @@
   display: flex;
   gap: 15px;
   margin-top: 15px;
+  flex-wrap: wrap; /* Added to handle payment form buttons */
 }
 
 .confirm-btn, .cancel-btn {
@@ -222,21 +200,47 @@
   margin-top: 20px;
 }
 
-/* Payment Page Specific Styles */
-.payment-page .payment-form {
-  max-width: 400px;
-  margin: 20px auto;
-  background: #ffffff;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  border-radius: 15px;
-  padding: 20px;
+/* Payment Form Styles (Integrated within Booking Card) */
+.payment-form {
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #f9f9f9;
+  width: 100%; /* Ensure it fits within the card */
 }
 
-.payment-page p {
-  font-size: 1.2rem;
-  color: #34495e;
-  text-align: center;
-  margin-bottom: 20px;
+.payment-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+  justify-content: space-between;
+}
+
+.pay-btn {
+  background-color: #6772e5;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex: 1; /* Equal width for buttons */
+}
+
+.pay-btn:hover {
+  background: #5469d4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(103, 114, 229, 0.3);
+}
+
+.pay-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 /* Success and Cancel Page Specific Styles */
@@ -291,11 +295,11 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .booking-page, .payment-page, .success-page, .cancel-page {
+  .booking-page, .success-page, .cancel-page {
     padding: 20px;
   }
 
-  .booking-page h2, .payment-page h2, .success-page h2, .cancel-page h2 {
+  .booking-page h2, .success-page h2, .cancel-page h2 {
     font-size: 2rem;
   }
 
@@ -329,6 +333,15 @@
     padding: 10px;
   }
 
+  .payment-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .pay-btn {
+    width: 100%;
+  }
+
   .booking-summary {
     padding: 15px;
   }
@@ -341,17 +354,13 @@
     font-size: 1rem;
   }
 
-  .payment-page .payment-form {
-    padding: 15px;
-  }
-
   .success-page p, .cancel-page p {
     font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .booking-page h2, .payment-page h2, .success-page h2, .cancel-page h2 {
+  .booking-page h2, .success-page h2, .cancel-page h2 {
     font-size: 1.8rem;
   }
 
@@ -368,7 +377,7 @@
     font-size: 1.2rem;
   }
 
-  .payment-page .payment-form {
+  .payment-form {
     padding: 10px;
   }
 
