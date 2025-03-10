@@ -3,11 +3,11 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import './BookingPage.css';
+import './BookingPage';
 import Navbar from './navbar';
 import Footer from './footer';
 
-// Initialize Stripe with your publishable key
+
 const stripePromise = loadStripe('pk_test_51QzdXNC6VkCbZF3l6wJmU7BRarVcsFgACpI9RQThRcc0dH4q4eFl8iMYt2zrBzmhm6CTyEt6NAdUDYZm8NhyPR5m008Zxr7RDP');
 
 const CheckoutForm = ({ bookingId, amount, onSuccess, onCancel }) => {
@@ -21,7 +21,7 @@ const CheckoutForm = ({ bookingId, amount, onSuccess, onCancel }) => {
     setProcessing(true);
 
     try {
-      const response = await fetch(`http://localhost:3000/create-payment-intent`, {
+      const response = await fetch(`https://eventura-13.onrender.com/create-payment-intent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: amount * 100 }), // Convert to cents
@@ -67,7 +67,7 @@ const BookingPage = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [bookings, setBookings] = useState([]);
   const [error, setError] = useState("");
-  const [showPayment, setShowPayment] = useState(null); // Track which booking to show payment for
+  const [showPayment, setShowPayment] = useState(null); 
   const navigate = useNavigate();
 
   useEffect(() => {
