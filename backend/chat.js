@@ -69,3 +69,71 @@ io.on("connection", (socket) => {
 });
 
 // ✅ Fetch Chat History (User-Specific)
+app.get("/chats/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const chats = await chatCollection.find({ userId }).sort({ timestamp: 1 }).toArray();
+    res.status(200).json(chats);
+  } catch (error) {
+    res.status(500).json({ message: "❌ Server Error", error });
+  }
+});
+
+// ✅ Admin Reply API
+app.post("/reply", async (req, res) => {
+  try {
+    const { userId, message } = req.body;
+
+    if (!userId || !message) {
+      return res.status(400).json({ message: "❌ Missing required fields" });
+    }
+
+    const adminReply = {
+      _id: new ObjectId(),
+      userId,
+      message,
+      sender: "admin",
+      timestamp: new Date(),
+    };
+
+    await chatCollection.insertOne(adminReply);
+    io.emit("receiveMessage", adminReply);
+
+    res.status(201).json({ message: "✅ Admin reply sent", reply: adminReply });
+  } catch (error) {
+    res.status(500).json({ message: "❌ Server Error", error });
+  }
+});
+
+app.delete("/chats/:userId/:messageId", async (req, res) => {
+    try {
+        const { userId, messageId } = req.params;
+
+        if (!ObjectId.isValid(messageId)) {
+            return res.status(400).json({ message: "❌ Invalid message ID" });
+        }
+
+        // 🟢 Message find karo
+        const message = await chatCollection.findOne({ _id: new ObjectId(messageId) });
+
+        if (!message) {
+            return res.status(404).json({ message: "❌ Message not found" });
+        }
+
+        // 🛑 User sirf apna chat delete kar sakta hai
+        if (message.userId !== userId && message.sender !== "admin") {
+            return res.status(403).json({ message: "⛔ You can only delete your own messages" });
+        }
+
+        // 🟢 Delete message
+        await chatCollection.deleteOne({ _id: new ObjectId(messageId) });
+
+        res.status(200).json({ message: "✅ Message deleted successfully" });
+
+        // 🔄 Notify all users that a message was deleted
+        io.emit("deleteMessage", { messageId });
+    } catch (error) {
+        console.error("❌ Error deleting message:", error);
+        res.status(500).json({ message: "❌ Server Error", error });
+    }
+});
