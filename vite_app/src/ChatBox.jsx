@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import { useAuth0 } from "@auth0/auth0-react";
 import './ChatBox.css';
 
-const socket = io("http://localhost:5000");
+const socket = io("https://eventura-14.onrender.com");
 
 const ChatBox = () => {
     const { user, isAuthenticated } = useAuth0();
@@ -15,7 +15,7 @@ const ChatBox = () => {
         if (!isAuthenticated || !isChatOpen) return;
 
         // Fetch Previous Messages
-        fetch(`http://localhost:5000/chats/${user.sub}`)
+        fetch(`https://eventura-14.onrender.com/chats/${user.sub}`)
             .then(res => res.json())
             .then(data => setMessages(data));
 
@@ -49,7 +49,7 @@ const ChatBox = () => {
     };
 
     const deleteMessage = (messageId) => {
-        fetch(`http://localhost:5000/chats/${user.sub}/${messageId}`, {
+        fetch(`https://eventura-14.onrender.com/chats/${user.sub}/${messageId}`, {
             method: "DELETE",
         })
             .then(res => res.json())
