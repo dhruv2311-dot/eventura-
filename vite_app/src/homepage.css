@@ -573,3 +573,198 @@
     font-size: 20px;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.homepage {
+  text-align: center;
+  padding: 20px;
+}
+
+.filter-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.close-btn {
+  background: red;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.filter-options {
+  margin-top: 15px;
+}
+
+.filter-option {
+  background: #f0f0f0;
+  border: none;
+  padding: 8px 15px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 0.3s;
+}
+
+.filter-option.active {
+  background: #007bff;
+  color: white;
+}
+
+.reset-btn {
+  background: orange;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.venue-list {
+  margin-top: 20px;
+}
+
+.venue-card {
+  background: #f8f9fa;
+  padding: 10px;
+  margin: 10px auto;
+  width: 200px;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.filter-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.filter-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.filter-dropdown {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ddd;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+  margin-top: 5px;
+  width: 200px;
+  z-index: 10;
+}
+
+.filter-option {
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.filter-option:hover {
+  background: #f1f1f1;
+}
+
+.selected {
+  background-color: #007bff;
+  color: white;
+}
+
+
+.filter-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.filter-container {
+  position: relative;
+  display: inline-block;
+}
+
+.filter-button {
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.filter-button:hover {
+  background-color: #e0e0e0;
+}
+
+.filter-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 150px;
+}
+
+.filter-option {
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+.filter-option:hover {
+  background-color: #f0f0f0;
+}
+
+.filter-option.selected {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Ensure the section titles have some breathing room */
+.category,
+.venues {
+  margin: 0;
+}
