@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import logo from './assets/eventura.png';
-import { FiSearch, FiUser, FiMenu, FiX } from 'react-icons/fi';
+import { FiUser, FiMenu, FiX, FiMessageSquare } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
-import './navbar.css';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
+import ChatBox from './ChatBox';  // 🟢 Import ChatBox
+import './navbar.css';
 
 const Navbar = () => {
   const { logout, isAuthenticated } = useAuth0();
   const navigate = useNavigate();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showChat, setShowChat] = useState(false);  // 🟢 State for Chat
 
   const handleProfile = () => {
     navigate('/profile');
@@ -45,7 +47,10 @@ const Navbar = () => {
 
         {/* Desktop Right Section */}
         <div className="right-section desktop-right">
-          <FiSearch className="icon1 search-icon" />
+          <FiMessageSquare 
+            className="icon1 chat-icon" 
+            onClick={() => setShowChat(!showChat)} 
+          />
           <FiUser className="icon1 profile-icon" onClick={handleProfile} />
           <select className="language-select">
             <option>ENGLISH</option>
@@ -75,8 +80,8 @@ const Navbar = () => {
             <div className="mobile-icon" onClick={handleProfile}>
               <FiUser className="icon1" /> Profile
             </div>
-            <div className="mobile-icon">
-              <FiSearch className="icon1" /> Search
+            <div className="mobile-icon" onClick={() => setShowChat(!showChat)}>
+              <FiMessageSquare className="icon1" /> Live Chat
             </div>
             <select className="language-select">
               <option>ENGLISH</option>
@@ -95,6 +100,9 @@ const Navbar = () => {
           </div>
         </div>
       </header>
+
+      {/* 🟢 Live Chat Box */}
+      {showChat && <ChatBox />}
     </div>
   );
 };

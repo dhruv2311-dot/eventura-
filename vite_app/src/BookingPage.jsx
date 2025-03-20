@@ -1,13 +1,74 @@
 import React, { useEffect, useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
-import './BookingPage.css';
+import { useNavigate } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import './BookingPage';
 import Navbar from './navbar';
 import Footer from './footer';
+
+
+const stripePromise = loadStripe('pk_test_51QzdXNC6VkCbZF3l6wJmU7BRarVcsFgACpI9RQThRcc0dH4q4eFl8iMYt2zrBzmhm6CTyEt6NAdUDYZm8NhyPR5m008Zxr7RDP');
+
+const CheckoutForm = ({ bookingId, amount, onSuccess, onCancel }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState(null);
+  const [processing, setProcessing] = useState(false);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setProcessing(true);
+
+    try {
+      const response = await fetch(`https://eventura-13.onrender.com/create-payment-intent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: amount * 100 }), // Convert to cents
+      });
+
+      const { clientSecret } = await response.json();
+
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement),
+        },
+      });
+
+      if (result.error) {
+        setError(result.error.message);
+      } else if (result.paymentIntent.status === "succeeded") {
+        onSuccess(bookingId);
+      }
+    } catch (err) {
+      setError("Payment failed. Please try again.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="payment-form">
+      <CardElement options={{ style: { base: { fontSize: '16px' } } }} />
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="payment-actions">
+        <button type="submit" disabled={!stripe || processing} className="pay-btn">
+          {processing ? "Processing..." : `Pay $${amount.toFixed(2)}`}
+        </button>
+        <button type="button" onClick={onCancel} className="cancel-btn">
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+};
 
 const BookingPage = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
   const [bookings, setBookings] = useState([]);
   const [error, setError] = useState("");
+  const [showPayment, setShowPayment] = useState(null); 
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isAuthenticated && user?.sub) {
@@ -17,34 +78,25 @@ const BookingPage = () => {
 
   const fetchBookings = async (userId) => {
     try {
-      console.log("Fetching bookings for user ID:", userId);
       const response = await fetch(`https://eventura-10.onrender.com/bookings/${encodeURIComponent(userId)}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
         if (response.status === 404) {
           setBookings([]);
           setError("");
           return;
         }
-        throw new Error(`Server responded with ${response.status}: ${errorText || "Failed to fetch bookings"}`);
+        throw new Error("Failed to fetch bookings");
       }
 
       const data = await response.json();
-      console.log("Bookings data:", data);
-
-      if (!data.bookings || !Array.isArray(data.bookings)) {
-        throw new Error("No valid bookings found in response");
-      }
-
-      setBookings(data.bookings);
+      setBookings(data.bookings || []);
       setError("");
     } catch (err) {
       setError(err.message);
-      console.error("❌ Fetching bookings error:", err);
     }
   };
 
@@ -56,23 +108,29 @@ const BookingPage = () => {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to update status: ${errorText}`);
-      }
-
-      // Refresh bookings after update
+      if (!response.ok) throw new Error("Failed to update status");
       fetchBookings(user.sub);
+      setShowPayment(null); // Close payment form after success
     } catch (err) {
       setError(err.message);
-      console.error("❌ Status update error:", err);
     }
   };
 
-  // Filter active bookings (Pending and Confirmed) for totals
-  const activeBookings = bookings.filter(booking => booking.status !== "Cancelled");
+  const handleConfirmWithPayment = (booking) => {
+    setShowPayment(booking._id); // Show payment form for this booking
+  };
 
-  // Calculate total money and items for active bookings only
+  const onPaymentSuccess = (bookingId) => {
+    handleStatusUpdate(bookingId, "Confirmed"); // Update status after payment
+    navigate('/success'); // Navigate to success page
+  };
+
+  const onPaymentCancel = () => {
+    setShowPayment(null); // Close payment form
+    navigate('/cancel'); // Navigate to cancel page
+  };
+
+  const activeBookings = bookings.filter(booking => booking.status !== "Cancelled");
   const totalMoney = activeBookings.reduce((sum, booking) => sum + (booking.price * (booking.count || 1)), 0);
   const totalItems = activeBookings.length;
 
@@ -104,12 +162,23 @@ const BookingPage = () => {
                     <p><strong>Status:</strong> {booking.status}</p>
                     {booking.status === "Pending" && (
                       <div className="booking-actions">
-                        <button
-                          onClick={() => handleStatusUpdate(booking._id, "Confirmed")}
-                          className="confirm-btn"
-                        >
-                          Confirm
-                        </button>
+                        {showPayment !== booking._id ? (
+                          <button
+                            onClick={() => handleConfirmWithPayment(booking)}
+                            className="confirm-btn"
+                          >
+                            Confirm & Pay
+                          </button>
+                        ) : (
+                          <Elements stripe={stripePromise}>
+                            <CheckoutForm
+                              bookingId={booking._id}
+                              amount={booking.price * (booking.count || 1)}
+                              onSuccess={onPaymentSuccess}
+                              onCancel={onPaymentCancel}
+                            />
+                          </Elements>
+                        )}
                         <button
                           onClick={() => handleStatusUpdate(booking._id, "Cancelled")}
                           className="cancel-btn"

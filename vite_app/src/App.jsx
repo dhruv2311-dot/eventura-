@@ -25,6 +25,9 @@ import Feedback from "./feedback";
 import Booking from "./BookingPage";
 import SavedVenues from "./SavedVenues";
 import UpcomingEvents from "./UpcomingEvents";
+import SuccessPage from "./successpage";
+import CancelPage from "./cancelpage";
+import ChatBox from "./ChatBox";
 
 function App() {
   const { user, isAuthenticated } = useAuth0();
@@ -52,6 +55,9 @@ function App() {
           <Route path="/feedback" element={<ProtectedRoute><Feedback /></ProtectedRoute>} />
           <Route path="/savedVenues" element={<ProtectedRoute><SavedVenues /></ProtectedRoute>} /> 
           <Route path="/upcomingEvents" element={<ProtectedRoute><UpcomingEvents /></ProtectedRoute>} />
+          <Route path="/success" element={<ProtectedRoute><SuccessPage /></ProtectedRoute>} />
+          <Route path="/cancel" element={<ProtectedRoute><CancelPage /></ProtectedRoute>} />
+          <Route path="/chat-section" element={<ProtectedRoute><ChatBox /></ProtectedRoute>} />
           
           {/* ✅ BookingPage me userId pass kar raha hu */}
           <Route path="/booking" element={<ProtectedRoute><Booking userId={userId} /></ProtectedRoute>} /> 
