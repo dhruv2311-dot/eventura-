@@ -4,6 +4,8 @@ import { useData } from './DataFetcher';
 import './VenueDetails.css'; // Import CSS
 import Navbar from './navbar';
 import Footer from './footer';
+
+
 const VenueDetails = () => {
   const { id } = useParams();
   const { venues } = useData();
@@ -13,6 +15,8 @@ const VenueDetails = () => {
   if (!venue) {
     return <h2>Venue not found</h2>;
   }
+
+
 
   return (
     <>
@@ -53,6 +57,7 @@ const VenueDetails = () => {
           <p className="additional-info"><strong>Additional Info:</strong> {venue.additional_info}</p>
         </div>
       </div>
+
       <Footer />
     </>
   );

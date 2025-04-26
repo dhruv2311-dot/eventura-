@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useData } from "./DataFetcher"; // Importing data
-import { useAuth0 } from "@auth0/auth0-react"; // Add Auth0
-import axios from "axios"; // Add axios for API calls
+import { useData } from "./DataFetcher";
+import { useAuth0 } from "@auth0/auth0-react";
+import axios from "axios";
 import Navbar from "./navbar";
 import Footer from "./footer";
 import "./homepage.css";
@@ -13,18 +13,63 @@ const Homepage = () => {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth0();
   const [searchCategory, setSearchCategory] = useState("");
   const [searchLocation, setSearchLocation] = useState("");
-  const [filteredCategories, setFilteredCategories] = useState([]);
-  const [filteredVenues, setFilteredVenues] = useState([]);
-  const [searchType, setSearchType] = useState(null); // "category" or "location"
-  const [savedVenues, setSavedVenues] = useState([]); // State for saved venues
+  const [filteredVenues, setFilteredVenues] = useState(venues);
+  const [searchType, setSearchType] = useState(null);
+  const [savedVenues, setSavedVenues] = useState([]);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [showVenueDropdown, setShowVenueDropdown] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedVenueLocation, setSelectedVenueLocation] = useState(null);
+  const [filteredCategories, setFilteredCategories] = useState(categories);
   const navigate = useNavigate();
 
-  // Fetch saved venues when authenticated
   useEffect(() => {
     if (isAuthenticated && user?.sub) {
       fetchSavedVenues();
     }
   }, [isAuthenticated, user]);
+
+  useEffect(() => {
+    setFilteredCategories(categories);
+    setFilteredVenues(venues);
+  }, [categories, venues]);
+
+  const categoryTypes = [
+    "Weddings and Prewedding",
+    "Birthday Parties",
+    "Corporate Events",
+    "Concerts",
+    "Festivals",
+    "Workshops",
+    "Private Parties",
+    "Product Launches",
+    "Charity Events",
+    "Sports Events",
+  ];
+
+  const venueLocations = [...new Set(venues.map((venue) => venue.location))];
+
+  const handleCategoryFilterSelect = (categoryType) => {
+    if (categoryType === "All" || selectedCategory === categoryType) {
+      setSelectedCategory(null);
+      setFilteredCategories(categories);
+    } else {
+      setSelectedCategory(categoryType);
+      setFilteredCategories(categories.filter((c) => c.name === categoryType));
+    }
+    setShowCategoryDropdown(false);
+  };
+
+  const handleVenueFilterSelect = (location) => {
+    if (location === "All" || selectedVenueLocation === location) {
+      setSelectedVenueLocation(null);
+      setFilteredVenues(venues);
+    } else {
+      setSelectedVenueLocation(location);
+      setFilteredVenues(venues.filter((v) => v.location === location));
+    }
+    setShowVenueDropdown(false);
+  };
 
   const fetchSavedVenues = async () => {
     try {
@@ -36,7 +81,6 @@ const Homepage = () => {
     }
   };
 
-  // Handle saving/unsaving venues
   const handleSaveVenue = async (venueId) => {
     if (!isAuthenticated || !user?.sub) {
       toast.error("Please log in to save venues.");
@@ -66,7 +110,6 @@ const Homepage = () => {
     }
   };
 
-  // Handle loading states
   if (authLoading || loading) return <h2 className="loading">Loading...</h2>;
   if (error) return <h2 className="error">Error fetching data</h2>;
 
@@ -146,8 +189,6 @@ const Homepage = () => {
   return (
     <>
       <Navbar />
-
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="overlay">
           <h2 className="hero-title">Your Event, Our Expertise</h2>
@@ -171,10 +212,40 @@ const Homepage = () => {
       </section>
 
       <div className="eventura-container">
-        {/* 🎯 Show Structured Category Suggestions */}
         {searchType === "category" && searchCategory && (
           <>
-            <h2 className="category">Search Results - Categories</h2>
+            <div className="filter-section-header">
+              <h2 className="category">Search Results - Categories</h2>
+              <div className="filter-container">
+                <button
+                  className="filter-button text-black"
+                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                >
+                  Filter Categories
+                </button>
+                {showCategoryDropdown && (
+                  <div className="filter-dropdown">
+                    <div
+                      className={`filter-option ${!selectedCategory ? "selected" : ""}`}
+                      onClick={() => handleCategoryFilterSelect("All")}
+                    >
+                      All Categories
+                    </div>
+                    {categoryTypes.map((categoryType) => (
+                      <div
+                        key={categoryType}
+                        className={`filter-option ${
+                          selectedCategory === categoryType ? "selected" : ""
+                        }`}
+                        onClick={() => handleCategoryFilterSelect(categoryType)}
+                      >
+                        {categoryType}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
             <div className="search-results-grid">
               {filteredCategories.length > 0 ? (
                 filteredCategories.map((category) => (
@@ -207,18 +278,171 @@ const Homepage = () => {
 
         {searchType === "location" && searchLocation && (
           <>
-            <h2 className="venues">Search Results - Venues</h2>
-            <div className="search-results-grid">
+            <div className="filter-section-header">
+              <h2 className="venues">Search Results - Venues</h2>
+              <div className="filter-container">
+                <button
+                  className="filter-button text-black"
+                  onClick={() => setShowVenueDropdown(!showVenueDropdown)}
+                >
+                  Filter Venues
+                </button>
+                {showVenueDropdown && (
+                  <div className="filter-dropdown">
+                    <div
+                      className={`filter-option ${!selectedVenueLocation ? "selected" : ""}`}
+                      onClick={() => handleVenueFilterSelect("All")}
+                    >
+                      All Locations
+                    </div>
+                    {venueLocations.map((location) => (
+                      <div
+                        key={location}
+                        className={`filter-option ${
+                          selectedVenueLocation === location ? "selected" : ""
+                        }`}
+                        onClick={() => handleVenueFilterSelect(location)}
+                      >
+                        {location}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="venues-container">
               {filteredVenues.length > 0 ? (
                 filteredVenues.map((venue) => (
-                  <div key={venue._id} className="search-card">
-                    <Link to={`/venue/${venue._id}`} className="search-card-link">
+                  <div key={venue._id} className="venue-card">
+                    <Link to={`/venue/${venue._id}`} className="venue-card-link">
                       <img
                         src={venue.images?.[0]}
                         alt={venue.name}
-                        className="search-image"
+                        className="venue-image"
                       />
-                      <div className="search-info">
+                      <div className="venue-details">
+                        <h3>{venue.name}</h3>
+                        <p><strong>Location:</strong> {venue.location}</p>
+                        <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
+                      </div>
+                    </Link>
+                    <button
+                      className="book-now-btn"
+                      onClick={() => handleBookNow(venue._id, "venue")}
+                    >
+                      Book Now
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="no-results">No venues found.</p>
+              )}
+            </div>
+          </>
+        )}
+
+        {searchType === null && (
+          <>
+            <div className="filter-section-header">
+              <h2 className="category">Browse By Category</h2>
+              <div className="filter-container">
+                <button
+                  className="filter-button text-black"
+                  onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                >
+                  Filter Categories
+                </button>
+                {showCategoryDropdown && (
+                  <div className="filter-dropdown">
+                    <div
+                      className={`filter-option ${!selectedCategory ? "selected" : ""}`}
+                      onClick={() => handleCategoryFilterSelect("All")}
+                    >
+                      All Categories
+                    </div>
+                    {categoryTypes.map((categoryType) => (
+                      <div
+                        key={categoryType}
+                        className={`filter-option ${
+                          selectedCategory === categoryType ? "selected" : ""
+                        }`}
+                        onClick={() => handleCategoryFilterSelect(categoryType)}
+                      >
+                        {categoryType}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="categories-container">
+              {filteredCategories.length > 0 ? (
+                filteredCategories.map((category) => (
+                  <div key={category._id} className="category-card">
+                    <Link to={`/category/${category._id}`} className="category-card-link">
+                      <img
+                        src={category.featured_images?.[0] || category.image_url}
+                        alt={category.name}
+                      />
+                      <h2>{category.name}</h2>
+                      <p>{category.description.substring(0, 60)}...</p>
+                    </Link>
+                    <button
+                      className="book-now-btn"
+                      onClick={() => handleBookNow(category._id, "category")}
+                    >
+                      Book Now
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="no-results">No categories found.</p>
+              )}
+            </div>
+
+            <div className="filter-section-header">
+              <h2 className="venues">Popular Venues</h2>
+              <div className="filter-container">
+                <button
+                  className="filter-button text-black"
+                  onClick={() => setShowVenueDropdown(!showVenueDropdown)}
+                >
+                  Filter Venues
+                </button>
+                {showVenueDropdown && (
+                  <div className="filter-dropdown">
+                    <div
+                      className={`filter-option ${!selectedVenueLocation ? "selected" : ""}`}
+                      onClick={() => handleVenueFilterSelect("All")}
+                    >
+                      All Locations
+                    </div>
+                    {venueLocations.map((location) => (
+                      <div
+                        key={location}
+                        className={`filter-option ${
+                          selectedVenueLocation === location ? "selected" : ""
+                        }`}
+                        onClick={() => handleVenueFilterSelect(location)}
+                      >
+                        {location}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="venues-container">
+              {filteredVenues.length > 0 ? (
+                filteredVenues.map((venue) => (
+                  <div key={venue._id} className="venue-card">
+                    <Link to={`/venue/${venue._id}`} className="venue-card-link">
+                      <img
+                        src={venue.images?.[0]}
+                        alt={venue.name}
+                        className="venue-image"
+                      />
+                      <div className="venue-details">
                         <h3>{venue.name}</h3>
                         <p><strong>Location:</strong> {venue.location}</p>
                         <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
@@ -233,7 +457,7 @@ const Homepage = () => {
                     <span
                       className={`heart-icon ${savedVenues.includes(venue._id) ? "saved" : ""}`}
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent triggering the Link
+                        e.stopPropagation();
                         handleSaveVenue(venue._id);
                       }}
                     >
@@ -244,68 +468,6 @@ const Homepage = () => {
               ) : (
                 <p className="no-results">No venues found.</p>
               )}
-            </div>
-          </>
-        )}
-
-        {/* 🎉 Normal Category & Venue Sections */}
-        {searchType === null && (
-          <>
-            <h2 className="category">Browse By Category</h2>
-            <div className="categories-container">
-              {categories.map((category) => (
-                <div key={category._id} className="category-card">
-                  <Link to={`/category/${category._id}`} className="category-card-link">
-                    <img
-                      src={category.featured_images?.[0] || category.image_url}
-                      alt={category.name}
-                    />
-                    <h2>{category.name}</h2>
-                    <p>{category.description.substring(0, 60)}...</p>
-                  </Link>
-                  <button
-                    className="book-now-btn"
-                    onClick={() => handleBookNow(category._id, "category")}
-                  >
-                    Book Now
-                  </button>
-                </div>
-              ))}
-            </div>
-
-            <h2 className="venues">Popular Venues</h2>
-            <div className="venues-container">
-              {venues.map((venue) => (
-                <div key={venue._id} className="venue-card">
-                  <Link to={`/venue/${venue._id}`} className="venue-card-link">
-                    <img
-                      src={venue.images?.[0]}
-                      alt={venue.name}
-                      className="venue-image"
-                    />
-                    <div className="venue-details">
-                      <h3>{venue.name}</h3>
-                      <p><strong>Location:</strong> {venue.location}</p>
-                      <p><strong>Price/Day:</strong> ${venue.price_per_day}</p>
-                    </div>
-                  </Link>
-                  <button
-                    className="book-now-btn"
-                    onClick={() => handleBookNow(venue._id, "venue")}
-                  >
-                    Book Now
-                  </button>
-                  <span
-                    className={`heart-icon ${savedVenues.includes(venue._id) ? "saved" : ""}`}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering the Link
-                      handleSaveVenue(venue._id);
-                    }}
-                  >
-                    {savedVenues.includes(venue._id) ? "❤️" : "🤍"}
-                  </span>
-                </div>
-              ))}
             </div>
           </>
         )}
@@ -342,7 +504,6 @@ const Homepage = () => {
           ))}
         </div>
 
-        {/* Reviews Section */}
         <h2 className="reviews">Reviews</h2>
         <div className="review-container">
           {reviews.map((review, index) => (
