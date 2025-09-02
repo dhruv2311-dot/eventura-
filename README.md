@@ -2,8 +2,8 @@
 
 🚀 **Quick Links**  
 - 🌐 [Frontend Deployment (Netlify)](https://eventura-23.netlify.app)  
-- 🎨 [Figma Design]([https://your-figma-link.com](https://www.figma.com/design/VTpYgGhHaIuRfob33itg2p/codinggita?node-id=124-532&t=vtIPVwzy8GVvCr3a-1))  
-- 📑 [API Documentation]([https://your-api-doc-link.com](https://documenter.getpostman.com/view/39189509/2sAYX3s4Dc))  
+- 🎨 [Figma Design]((https://www.figma.com/design/VTpYgGhHaIuRfob33itg2p/codinggita?node-id=124-532&t=vtIPVwzy8GVvCr3a-1))  
+- 📑 [API Documentation]((https://documenter.getpostman.com/view/39189509/2sAYX3s4Dc))  
 
 ---
 
