@@ -43,3 +43,65 @@ It features a seamless user experience, authentication with **Auth0**, a robust 
 
 ---
 
+## 🎯 Usage
+
+🖥️ Open the landing page → Browse events & venues  
+🔐 Login with Auth0 → Unlock booking system  
+📅 Book an event/venue → Check under "My Booking"  
+✍️ Confirm/Cancel booking → Status updates accordingly  
+💳 Pay for booking → Download digital receipt  
+💬 Chat live with admin for queries  
+🛠️ Admin panel → Manage categories, venues, products  
+
+---
+
+## 🗺️ Roadmap
+
+- [ ] Add real payment gateway integration  
+- [ ] Implement admin role management  
+- [ ] Persistent live chat with typing indicators  
+- [ ] Event recommendations using AI  
+
+---
+
+## 🛠️ Tech Stack
+
+### **Frontend**
+- React.js + Tailwind CSS  
+- Shadcn/UI + Lucide React (icons)  
+- Framer Motion (animations)  
+
+### **Backend**
+- Node.js + Express.js  
+- MongoDB (with Cloudinary for image uploads)  
+- Socket.io (real-time chat)  
+
+### **Auth & Deployment**
+- Auth0 (authentication)  
+- Netlify (frontend hosting)  
+- Render (backend hosting)  
+
+---
+
+## 🚀 Getting Started
+
+### 🔧 Prerequisites
+- Node.js & npm  
+- MongoDB instance  
+- Auth0 account  
+
+### ⚡ Installation
+```bash
+# Clone the repository
+git clone https://github.com/your-username/eventura.git
+
+# Navigate to project directory
+cd eventura
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+---
+
